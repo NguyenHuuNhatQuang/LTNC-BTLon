@@ -3,8 +3,6 @@ import java.util.List;
 
 public class Seller extends Users {
     private List<String> itemsForSale = new ArrayList<>();
-
-    // Sử dụng constructor mặc định và gán giá trị thủ công
     public Seller() {
         super();
     }
