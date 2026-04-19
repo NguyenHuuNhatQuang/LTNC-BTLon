@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>BidNow - UI Preview (JavaFX mockup)</title>
+<style>
+  :root{
+    --primary:#1877F2; --primary-hover:#166FE5; --primary-light:#E7F3FF;
+    --accent:#0095F6; --bg:#F0F2F5; --card:#fff;
+    --text:#050505; --muted:#65676B; --border:#DADDE1;
+    --success:#42B72A; --error:#FA383E;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:"Segoe UI",Helvetica,Arial,sans-serif}
+  body{background:#1a1a1a;padding:32px;color:#fff}
+  h1.page-title{font-size:24px;margin-bottom:24px}
+  .screen-label{color:#aaa;font-size:13px;margin:32px 0 8px;letter-spacing:1px;text-transform:uppercase}
+  .screen{background:var(--bg);border-radius:12px;overflow:hidden;width:1100px;margin-bottom:8px;
+          box-shadow:0 12px 40px rgba(0,0,0,.4)}
+  .titlebar{background:#e2e4e7;padding:10px 14px;display:flex;gap:6px;align-items:center;font-size:12px;color:#444}
+  .dot{width:12px;height:12px;border-radius:50%}
+  .dot.r{background:#FF5F57}.dot.y{background:#FEBC2E}.dot.g{background:#28C840}
+
+  /* Generic tokens */
+  .h1{font-size:28px;font-weight:bold;color:var(--text)}
+  .h2{font-size:20px;font-weight:bold;color:var(--text)}
+  .h3{font-size:16px;font-weight:bold;color:var(--text)}
+  .muted{color:var(--muted);font-size:13px}
+  .caption{color:var(--muted);font-size:12px}
+  .price{font-size:22px;font-weight:bold;color:var(--primary)}
+  .card{background:var(--card);border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.06);padding:20px}
+  .btn{padding:10px 20px;border-radius:8px;border:0;font-weight:bold;font-size:15px;cursor:pointer;transition:.15s}
+  .btn-primary{background:var(--primary);color:#fff;box-shadow:0 4px 8px rgba(24,119,242,.25)}
+  .btn-primary:hover{background:var(--primary-hover)}
+  .btn-accent{background:var(--accent);color:#fff}
+  .btn-secondary{background:var(--primary-light);color:var(--primary)}
+  .btn-ghost{background:transparent;color:var(--primary)}
+  input,select,textarea{width:100%;padding:10px 14px;border:1.5px solid transparent;background:#F0F2F5;border-radius:8px;font-size:14px;font-family:inherit}
+  input:focus{outline:none;background:#fff;border-color:var(--primary)}
+  .badge{padding:3px 8px;border-radius:50px;font-size:11px;font-weight:bold;color:#fff;display:inline-block}
+  .badge.live{background:var(--error)}.badge.open{background:var(--success)}.badge.finished{background:#BCC0C4}
+  .avatar{width:40px;height:40px;border-radius:50%;background:var(--primary-light);color:var(--primary);
+          display:flex;align-items:center;justify-content:center;font-weight:bold}
+
+  /* ============ LOGIN ============ */
+  .login{display:flex;height:720px}
+  .login .left{flex:1;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;
+                padding:60px;display:flex;flex-direction:column;justify-content:center;gap:16px}
+  .login .left h1{font-size:56px}
+  .login .left p.lead{font-size:22px;font-weight:bold}
+  .login .left p.sub{font-size:15px;opacity:.92}
+  .login .right{flex:1;display:flex;align-items:center;justify-content:center}
+  .login .right .form{width:380px;display:flex;flex-direction:column;gap:14px}
+  .field-group{display:flex;flex-direction:column;gap:4px}
+
+  /* ============ DASHBOARD ============ */
+  .dashboard{display:grid;grid-template-rows:60px 1fr;height:780px}
+  .navbar{background:#fff;display:flex;align-items:center;gap:20px;padding:0 24px;
+          box-shadow:0 2px 6px rgba(0,0,0,.08);z-index:1}
+  .navbar .logo{color:var(--primary);font-size:24px;font-weight:bold}
+  .navbar .search{flex:1;max-width:340px;background:var(--bg);border-radius:50px;padding:8px 16px;
+                  border:0;color:var(--muted)}
+  .navbar .spacer{flex:1}
+  .dash-body{display:grid;grid-template-columns:240px 1fr 280px}
+  .sidebar{background:#fff;padding:16px 12px;display:flex;flex-direction:column;gap:4px}
+  .nav-item{padding:12px 16px;border-radius:8px;font-weight:bold;cursor:pointer;display:flex;gap:10px;align-items:center}
+  .nav-item:hover{background:var(--bg)}
+  .nav-item.active{background:var(--primary-light);color:var(--primary)}
+  .feed{padding:20px 24px;overflow:auto;background:var(--bg)}
+  .feed-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:16px 0 24px}
+  .auction-card{background:#fff;border-radius:12px;overflow:hidden;cursor:pointer;
+                box-shadow:0 4px 12px rgba(0,0,0,.06);transition:.2s}
+  .auction-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(24,119,242,.18)}
+  .auction-card .img{height:160px;position:relative}
+  .auction-card .img .badge{position:absolute;top:12px;right:12px}
+  .auction-card .body{padding:14px;display:flex;flex-direction:column;gap:6px}
+  .gradient-1{background:linear-gradient(135deg,#1877F2,#0095F6)}
+  .gradient-2{background:linear-gradient(135deg,#9B51E0,#1877F2)}
+  .gradient-3{background:linear-gradient(135deg,#0095F6,#00C2FF)}
+  .gradient-4{background:linear-gradient(135deg,#1877F2,#9B51E0)}
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;padding:12px 8px;color:var(--muted);font-size:12px;font-weight:bold;
+     border-bottom:1px solid var(--border)}
+  td{padding:12px 8px;font-size:14px;border-bottom:1px solid #F0F2F5}
+  tr:hover td{background:var(--primary-light)}
+  .right-rail{background:#fff;padding:20px;display:flex;flex-direction:column;gap:14px}
+  .trend-row{display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;cursor:pointer}
+  .trend-row:hover{background:var(--bg)}
+  .trend-row .thumb{width:48px;height:48px;border-radius:8px}
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .stat-grid .card{text-align:center;padding:16px}
+  .stat-grid .num{font-size:24px;font-weight:bold}
+
+  /* ============ AUCTION DETAIL ============ */
+  .detail{display:grid;grid-template-rows:60px 1fr;height:820px}
+  .detail-body{display:grid;grid-template-columns:1fr 380px;gap:24px;padding:24px 32px;
+               background:var(--bg);overflow:auto}
+  .hero{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+  .hero .pic{height:340px}
+  .hero-meta{padding:20px;display:flex;flex-direction:column;gap:10px}
+  .seller-row{display:flex;align-items:center;gap:10px}
+  .quick-bids{display:flex;gap:6px}
+  .quick-bids .btn{padding:8px 12px;font-size:13px;flex:1}
+  .bid-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px}
+  .bid-row:hover{background:var(--bg)}
+  .bid-row .info{flex:1}
+  .bid-row .info .u{font-weight:bold}
+  .bid-row .info .a{color:var(--primary);font-weight:bold}
+
+  /* ============ CREATE ITEM ============ */
+  .create-body{padding:32px;background:var(--bg);max-width:760px;margin:auto;display:flex;
+               flex-direction:column;gap:20px;height:760px;overflow:auto}
+  .image-drop{height:200px;border:2px dashed var(--primary);border-radius:12px;
+              background:var(--primary-light);display:flex;align-items:center;justify-content:center;
+              flex-direction:column;gap:6px;cursor:pointer}
+  .image-drop .icon{font-size:40px}
+  .image-drop .lbl{color:var(--primary);font-weight:bold}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .actions-row{display:flex;justify-content:flex-end;gap:10px}
+</style>
+</head>
+<body>
+
+<h1 class="page-title">🎨 BidNow — UI Preview (5 màn hình JavaFX render trong browser)</h1>
+
+<!-- ============ 1. LOGIN ============ -->
+<div class="screen-label">① LOGIN  ·  /view/login.fxml</div>
+<div class="screen">
+  <div class="titlebar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+    <span style="margin-left:8px">BidNow - Auction</span></div>
+  <div class="login">
+    <div class="left">
+      <h1>BidNow</h1>
+      <p class="lead">Sàn đấu giá trực tuyến realtime.</p>
+      <p class="sub">Tìm kiếm món đồ độc đáo, đấu giá minh bạch, kết nối với cộng đồng người chơi đam mê.</p>
+    </div>
+    <div class="right">
+      <div class="card form">
+        <div class="h1">Đăng nhập</div>
+        <div class="muted">Chào mừng bạn quay lại với BidNow</div>
+        <div style="height:8px"></div>
+        <div class="field-group"><label class="caption">Tên đăng nhập hoặc email</label>
+          <input value="nam_dev"></div>
+        <div class="field-group"><label class="caption">Mật khẩu</label>
+          <input type="password" value="••••••••"></div>
+        <button class="btn btn-primary">Đăng nhập</button>
+        <a style="color:var(--primary);text-decoration:none;font-size:13px">Quên mật khẩu?</a>
+        <hr style="border:0;border-top:1px solid var(--border)">
+        <button class="btn btn-accent">Tạo tài khoản mới</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 2. DASHBOARD ============ -->
+<div class="screen-label">② DASHBOARD  ·  /view/dashboard.fxml</div>
+<div class="screen">
+  <div class="titlebar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+    <span style="margin-left:8px">BidNow - Trang chủ</span></div>
+  <div class="dashboard">
+    <div class="navbar">
+      <div class="logo">BidNow</div>
+      <input class="search" placeholder="🔍  Tìm kiếm phiên đấu giá, sản phẩm…">
+      <div class="spacer"></div>
+      <button class="btn btn-accent">+ Đăng sản phẩm</button>
+      <button class="btn btn-ghost">🔔</button>
+      <div class="avatar">N</div>
+      <strong>nam_dev</strong>
+      <button class="btn btn-ghost">Đăng xuất</button>
+    </div>
+    <div class="dash-body">
+      <div class="sidebar">
+        <div class="nav-item active"><span>🏠</span>Trang chủ</div>
+        <div class="nav-item"><span>🟢</span>Đang Live</div>
+        <div class="nav-item"><span>⭐</span>Theo dõi</div>
+        <div class="nav-item"><span>📦</span>Sản phẩm của tôi</div>
+        <div class="nav-item"><span>📜</span>Lịch sử bid</div>
+        <div style="height:1px;background:var(--border);margin:12px 8px"></div>
+        <div class="caption" style="padding:4px 16px">DANH MỤC</div>
+        <div class="nav-item"><span>📱</span>Điện tử</div>
+        <div class="nav-item"><span>🎨</span>Nghệ thuật</div>
+        <div class="nav-item"><span>🚗</span>Phương tiện</div>
+        <div class="nav-item"><span>💎</span>Trang sức</div>
+      </div>
+
+      <div class="feed">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="h2">Phiên đấu giá</div>
+          <div style="flex:1"></div>
+          <select style="max-width:180px"><option>Sắp xếp: Mới nhất</option></select>
+        </div>
+
+        <div class="feed-grid">
+          <!-- Card 1 -->
+          <div class="auction-card">
+            <div class="img gradient-1"><span class="badge live">LIVE</span></div>
+            <div class="body">
+              <div class="h3">MacBook Pro M3 14"</div>
+              <div class="muted">@minh.tran • Điện tử</div>
+              <div style="display:flex;align-items:flex-end;gap:10px;margin-top:6px">
+                <div><div class="caption">Giá hiện tại</div><div class="price">42.500.000 ₫</div></div>
+                <div style="flex:1"></div>
+                <div class="muted">⏱ 02:34</div>
+              </div>
+              <button class="btn btn-secondary" style="margin-top:8px">Vào đấu giá →</button>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div class="auction-card">
+            <div class="img gradient-1"><span class="badge live">LIVE</span></div>
+            <div class="body">
+              <div class="h3">iPhone 15 Pro Max</div>
+              <div class="muted">@hoa.nguyen • Điện tử</div>
+              <div style="display:flex;align-items:flex-end;gap:10px;margin-top:6px">
+                <div><div class="caption">Giá hiện tại</div><div class="price">28.900.000 ₫</div></div>
+                <div style="flex:1"></div>
+                <div class="muted">⏱ 00:48</div>
+              </div>
+              <button class="btn btn-secondary" style="margin-top:8px">Vào đấu giá →</button>
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="auction-card">
+            <div class="img gradient-2"><span class="badge open">OPEN</span></div>
+            <div class="body">
+              <div class="h3">Tranh sơn dầu phố cổ</div>
+              <div class="muted">@art.studio • Nghệ thuật</div>
+              <div style="display:flex;align-items:flex-end;gap:10px;margin-top:6px">
+                <div><div class="caption">Giá hiện tại</div><div class="price">8.500.000 ₫</div></div>
+                <div style="flex:1"></div>
+                <div class="muted">⏱ 1d 2h</div>
+              </div>
+              <button class="btn btn-secondary" style="margin-top:8px">Vào đấu giá →</button>
+            </div>
+          </div>
+          <!-- Card 4 -->
+          <div class="auction-card">
+            <div class="img gradient-4"><span class="badge live">LIVE</span></div>
+            <div class="body">
+              <div class="h3">Đồng hồ Rolex cổ</div>
+              <div class="muted">@luxury.vn • Trang sức</div>
+              <div style="display:flex;align-items:flex-end;gap:10px;margin-top:6px">
+                <div><div class="caption">Giá hiện tại</div><div class="price">120.000.000 ₫</div></div>
+                <div style="flex:1"></div>
+                <div class="muted">⏱ 05:12</div>
+              </div>
+              <button class="btn btn-secondary" style="margin-top:8px">Vào đấu giá →</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="h2" style="margin-bottom:12px">Tất cả phiên đấu giá</div>
+        <div class="card" style="padding:0">
+          <table>
+            <thead><tr>
+              <th>SẢN PHẨM</th><th>DANH MỤC</th><th>NGƯỜI BÁN</th>
+              <th>GIÁ HIỆN TẠI</th><th>THỜI GIAN</th><th>TRẠNG THÁI</th>
+            </tr></thead>
+            <tbody>
+              <tr><td>MacBook Pro M3 14"</td><td>Điện tử</td><td>minh.tran</td><td>42.500.000 ₫</td><td>02:34</td><td><span class="badge live">LIVE</span></td></tr>
+              <tr><td>iPhone 15 Pro Max</td><td>Điện tử</td><td>hoa.nguyen</td><td>28.900.000 ₫</td><td>00:48</td><td><span class="badge live">LIVE</span></td></tr>
+              <tr><td>Honda Civic 2020</td><td>Phương tiện</td><td>auto.house</td><td>580.000.000 ₫</td><td>3d</td><td><span class="badge open">OPEN</span></td></tr>
+              <tr><td>Lego Millennium Falcon</td><td>Nghệ thuật</td><td>brick.fan</td><td>12.500.000 ₫</td><td>Hết</td><td><span class="badge finished">FINISHED</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="right-rail">
+        <div class="h3">🔥 Đang sôi nổi</div>
+        <div class="trend-row"><div class="thumb gradient-1"></div><div><div style="font-weight:bold">MacBook Pro M3</div><div class="muted">42.500.000 ₫</div></div></div>
+        <div class="trend-row"><div class="thumb gradient-1"></div><div><div style="font-weight:bold">iPhone 15 Pro Max</div><div class="muted">28.900.000 ₫</div></div></div>
+        <div class="trend-row"><div class="thumb gradient-4"></div><div><div style="font-weight:bold">Rolex cổ</div><div class="muted">120.000.000 ₫</div></div></div>
+        <div style="height:1px;background:var(--border)"></div>
+        <div class="h3">📊 Thống kê</div>
+        <div class="stat-grid">
+          <div class="card"><div class="num" style="color:var(--primary)">12</div><div class="caption">Đang đấu</div></div>
+          <div class="card"><div class="num" style="color:var(--success)">3</div><div class="caption">Thắng</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 3. AUCTION DETAIL ============ -->
+<div class="screen-label">③ AUCTION DETAIL  ·  /view/auction-detail.fxml</div>
+<div class="screen">
+  <div class="titlebar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+    <span style="margin-left:8px">BidNow - Chi tiết đấu giá</span></div>
+  <div class="detail">
+    <div class="navbar">
+      <button class="btn btn-ghost">←  Quay lại</button>
+      <div class="logo">BidNow</div>
+      <div class="spacer"></div>
+      <button class="btn btn-ghost">🔔</button>
+      <div class="avatar">N</div>
+    </div>
+    <div class="detail-body">
+      <div>
+        <div class="hero">
+          <div class="pic gradient-1"></div>
+          <div class="hero-meta">
+            <div style="display:flex;gap:8px;align-items:center">
+              <span class="badge open">Điện tử</span>
+              <span class="badge live">LIVE</span>
+              <div style="flex:1"></div>
+              <span class="caption">#A001</span>
+            </div>
+            <div class="h1">MacBook Pro M3 14"</div>
+            <div class="seller-row">
+              <div class="avatar">M</div>
+              <div>
+                <div style="font-weight:bold">@minh.tran</div>
+                <div class="caption" style="color:var(--success)">Người bán đã xác minh</div>
+              </div>
+              <div style="flex:1"></div>
+              <button class="btn btn-secondary">Theo dõi</button>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <div class="h3">Mô tả sản phẩm</div>
+          <p style="margin-top:8px;line-height:1.6">Sản phẩm chính hãng, còn nguyên seal, bảo hành 12 tháng.
+            Liên hệ người bán để biết thêm thông tin chi tiết về tình trạng và giao hàng.</p>
+          <div style="height:12px"></div>
+          <div class="h3">Thông số</div>
+          <table style="margin-top:8px">
+            <tr><td class="muted">Giá khởi điểm:</td><td>29.750.000 ₫</td></tr>
+            <tr><td class="muted">Bước giá:</td><td>500.000 ₫</td></tr>
+            <tr><td class="muted">Số lượt bid:</td><td>17</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <div class="caption">GIÁ HIỆN TẠI</div>
+          <div style="font-size:36px;font-weight:bold;color:var(--primary);margin:6px 0">42.500.000 ₫</div>
+          <div style="display:flex;gap:8px;align-items:center"><span>👑</span>
+            <span class="muted">Đang dẫn đầu:</span><strong>@nam_dev</strong></div>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:6px"><span>⏱</span>
+            <span class="muted">Còn lại:</span><strong style="color:var(--error)">02:34</strong></div>
+          <div style="height:1px;background:var(--border);margin:14px 0"></div>
+          <div class="h3">Đặt giá của bạn</div>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+            <input value="43000000" style="flex:1"><strong>₫</strong>
+          </div>
+          <div class="quick-bids" style="margin-top:8px">
+            <button class="btn btn-secondary">+500K</button>
+            <button class="btn btn-secondary">+1M</button>
+            <button class="btn btn-secondary">+5M</button>
+          </div>
+          <button class="btn btn-primary" style="width:100%;margin-top:10px">🔨   ĐẶT GIÁ</button>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;align-items:center"><div class="h3">Lịch sử đấu giá</div>
+            <div style="flex:1"></div><span class="muted">17 lượt</span></div>
+          <div style="margin-top:10px;display:flex;flex-direction:column;gap:4px">
+            <div class="bid-row"><div class="avatar">N</div>
+              <div class="info"><div class="u">@nam_dev</div><div class="a">42.500.000 ₫</div></div>
+              <div class="caption">vừa xong</div></div>
+            <div class="bid-row"><div class="avatar">H</div>
+              <div class="info"><div class="u">@hoa</div><div class="a">42.000.000 ₫</div></div>
+              <div class="caption">12s</div></div>
+            <div class="bid-row"><div class="avatar">M</div>
+              <div class="info"><div class="u">@minh</div><div class="a">41.000.000 ₫</div></div>
+              <div class="caption">45s</div></div>
+            <div class="bid-row"><div class="avatar">L</div>
+              <div class="info"><div class="u">@long</div><div class="a">40.500.000 ₫</div></div>
+              <div class="caption">1m</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 4. CREATE ITEM ============ -->
+<div class="screen-label">④ CREATE ITEM  ·  /view/create-item.fxml</div>
+<div class="screen">
+  <div class="titlebar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+    <span style="margin-left:8px">BidNow - Đăng phiên đấu giá</span></div>
+  <div class="dashboard">
+    <div class="navbar">
+      <button class="btn btn-ghost">←  Quay lại</button>
+      <div class="logo">BidNow</div>
+      <div class="spacer"></div>
+      <div class="avatar">N</div>
+    </div>
+    <div class="create-body">
+      <div class="h1">Đăng phiên đấu giá mới</div>
+      <div class="muted">Điền đầy đủ thông tin để bắt đầu phiên đấu giá.</div>
+
+      <div class="card">
+        <div class="h3" style="margin-bottom:10px">Hình ảnh sản phẩm</div>
+        <div class="image-drop">
+          <div class="icon">📷</div>
+          <div class="lbl">Click để chọn ảnh hoặc kéo thả vào đây</div>
+          <div class="caption">JPG, PNG tối đa 5MB</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="h3" style="margin-bottom:10px">Thông tin sản phẩm</div>
+        <label class="caption">Tên sản phẩm</label>
+        <input placeholder="VD: MacBook Pro M3 14 inch" style="margin:4px 0 10px">
+        <div class="form-row">
+          <div><label class="caption">Danh mục</label>
+            <select style="margin-top:4px"><option>Điện tử</option></select></div>
+          <div><label class="caption">Tình trạng</label>
+            <select style="margin-top:4px"><option>Mới</option></select></div>
+        </div>
+        <label class="caption" style="margin-top:10px;display:block">Mô tả chi tiết</label>
+        <textarea rows="4" placeholder="Mô tả tình trạng, nguồn gốc, đặc điểm nổi bật..." style="margin-top:4px;resize:vertical"></textarea>
+      </div>
+
+      <div class="card">
+        <div class="h3" style="margin-bottom:10px">Cấu hình đấu giá</div>
+        <div class="form-row">
+          <div><label class="caption">Giá khởi điểm (₫)</label><input placeholder="VD: 5000000" style="margin-top:4px"></div>
+          <div><label class="caption">Bước giá (₫)</label><input placeholder="VD: 500000" style="margin-top:4px"></div>
+        </div>
+        <div class="form-row" style="margin-top:10px">
+          <div><label class="caption">Thời lượng</label>
+            <select style="margin-top:4px"><option>24 giờ</option></select></div>
+          <div><label class="caption">Giá mua ngay (tùy chọn)</label><input placeholder="VD: 50000000" style="margin-top:4px"></div>
+        </div>
+      </div>
+
+      <div class="actions-row">
+        <button class="btn btn-ghost">Hủy</button>
+        <button class="btn btn-secondary">Lưu nháp</button>
+        <button class="btn btn-primary">🚀  Đăng phiên đấu giá</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 5. REGISTER ============ -->
+<div class="screen-label">⑤ REGISTER  ·  /view/register.fxml</div>
+<div class="screen">
+  <div class="titlebar"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+    <span style="margin-left:8px">BidNow - Đăng ký</span></div>
+  <div class="login">
+    <div class="left">
+      <h1 style="font-size:48px">Tham gia</h1>
+      <p class="lead" style="font-size:28px">cộng đồng đấu giá.</p>
+      <p class="sub">Đăng ký miễn phí trong 30 giây. Bắt đầu đấu giá hoặc rao bán món đồ của bạn ngay hôm nay.</p>
+    </div>
+    <div class="right">
+      <div class="card form" style="width:400px">
+        <div class="h1">Tạo tài khoản</div>
+        <div class="muted">Chỉ cần vài giây</div>
+        <div style="height:8px"></div>
+        <div class="form-row">
+          <div class="field-group"><label class="caption">Họ</label><input value="Nguyễn"></div>
+          <div class="field-group"><label class="caption">Tên</label><input value="Văn A"></div>
+        </div>
+        <div class="field-group"><label class="caption">Tên đăng nhập</label><input placeholder="nam_dev"></div>
+        <div class="field-group"><label class="caption">Email</label><input placeholder="ban@email.com"></div>
+        <div class="field-group"><label class="caption">Mật khẩu</label><input type="password" placeholder="Tối thiểu 6 ký tự"></div>
+        <div class="field-group"><label class="caption">Vai trò</label>
+          <select><option>Bidder (Người mua)</option><option>Seller (Người bán)</option></select></div>
+        <button class="btn btn-primary">Đăng ký</button>
+        <div style="text-align:center;font-size:13px">Đã có tài khoản?
+          <a style="color:var(--primary);font-weight:bold">Đăng nhập</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
