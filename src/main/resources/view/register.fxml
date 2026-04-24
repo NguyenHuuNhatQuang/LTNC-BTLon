@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.auction.client.controller.RegisterController"
+      prefWidth="1100" prefHeight="720" alignment="CENTER">
+
+    <VBox HBox.hgrow="ALWAYS" alignment="CENTER" spacing="16"
+          style="-fx-background-color: linear-gradient(to bottom right, #1877F2, #0095F6);"
+          prefWidth="500">
+        <padding><Insets top="40" right="60" bottom="40" left="60"/></padding>
+        <Label text="Tham gia" style="-fx-font-size: 48; -fx-font-weight: bold; -fx-text-fill: white;"/>
+        <Label text="cộng đồng đấu giá." style="-fx-font-size: 28; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        <Label wrapText="true"
+               text="Đăng ký miễn phí trong 30 giây. Bắt đầu đấu giá hoặc rao bán món đồ của bạn ngay hôm nay."
+               style="-fx-font-size: 15; -fx-text-fill: rgba(255,255,255,0.92);"/>
+    </VBox>
+
+    <VBox alignment="CENTER" prefWidth="600">
+        <padding><Insets top="40" right="60" bottom="40" left="60"/></padding>
+
+        <VBox styleClass="card,card-padded" maxWidth="420" spacing="12">
+            <Label text="Tạo tài khoản" styleClass="h1"/>
+            <Label text="Chỉ cần vài giây" styleClass="muted"/>
+
+            <Region prefHeight="8"/>
+
+            <HBox spacing="10">
+                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                    <Label text="Họ" styleClass="caption"/>
+                    <TextField fx:id="firstNameField" promptText="Nguyễn"/>
+                </VBox>
+                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                    <Label text="Tên" styleClass="caption"/>
+                    <TextField fx:id="lastNameField" promptText="Văn A"/>
+                </VBox>
+            </HBox>
+
+            <Label text="Tên đăng nhập" styleClass="caption"/>
+            <TextField fx:id="usernameField" promptText="nam_dev"/>
+
+            <Label text="Email" styleClass="caption"/>
+            <TextField fx:id="emailField" promptText="ban@email.com"/>
+
+            <Label text="Mật khẩu" styleClass="caption"/>
+            <PasswordField fx:id="passwordField" promptText="Tối thiểu 6 ký tự"/>
+
+            <Label text="Vai trò" styleClass="caption"/>
+            <ComboBox fx:id="roleBox" maxWidth="Infinity"/>
+
+            <Label fx:id="errorLabel" styleClass="error-text" visible="false" managed="false"/>
+
+            <Button text="Đăng ký" styleClass="btn-primary" maxWidth="Infinity"
+                    onAction="#handleRegister"/>
+
+            <HBox alignment="CENTER" spacing="6">
+                <Label text="Đã có tài khoản?" styleClass="muted"/>
+                <Hyperlink text="Đăng nhập" style="-fx-text-fill: -fx-primary;"
+                           onAction="#handleGoLogin"/>
+            </HBox>
+        </VBox>
+    </VBox>
+</HBox>
