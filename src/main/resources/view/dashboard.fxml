@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.auction.client.controller.DashboardController"
+            prefWidth="1280" prefHeight="800">
+
+    <!-- ============ TOP NAVBAR (FB style) ============ -->
+    <top>
+        <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="20">
+            <Label text="BidNow" styleClass="navbar-logo"/>
+
+            <TextField fx:id="searchField" styleClass="navbar-search"
+                       promptText="🔍  Tìm kiếm phiên đấu giá, sản phẩm…"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button text="+ Đăng sản phẩm" styleClass="btn-accent"
+                    onAction="#handleCreateItem"/>
+            <Button text="🔔" styleClass="btn-icon" onAction="#handleNotifications"/>
+
+            <HBox alignment="CENTER" spacing="8">
+                <Label fx:id="avatarLabel" text="N" styleClass="avatar-circle"/>
+                <Label fx:id="userNameLabel" text="nam_dev" style="-fx-font-weight: bold;"/>
+            </HBox>
+            <Button text="Đăng xuất" styleClass="btn-ghost" onAction="#handleLogout"/>
+        </HBox>
+    </top>
+
+    <!-- ============ LEFT SIDEBAR ============ -->
+    <left>
+        <VBox styleClass="sidebar" spacing="4">
+            <padding><Insets top="16" right="12" bottom="16" left="12"/></padding>
+
+            <Button fx:id="navHomeBtn" text="🏠   Trang chủ" styleClass="sidebar-item,sidebar-item-active"
+                    maxWidth="Infinity" onAction="#handleNavHome"/>
+            <Button text="🟢   Đang Live" styleClass="sidebar-item"
+                    maxWidth="Infinity" onAction="#handleNavLive"/>
+            <Button text="⭐   Theo dõi" styleClass="sidebar-item"
+                    maxWidth="Infinity" onAction="#handleNavWatching"/>
+            <Button text="📦   Sản phẩm của tôi" styleClass="sidebar-item"
+                    maxWidth="Infinity" onAction="#handleNavMyItems"/>
+            <Button text="📜   Lịch sử bid" styleClass="sidebar-item"
+                    maxWidth="Infinity" onAction="#handleNavHistory"/>
+
+            <Region prefHeight="20"/>
+            <Region styleClass="divider"/>
+            <Region prefHeight="12"/>
+
+            <Label text="DANH MỤC" styleClass="caption">
+                <padding><Insets left="12"/></padding>
+            </Label>
+            <Button text="📱   Điện tử" styleClass="sidebar-item" maxWidth="Infinity"/>
+            <Button text="🎨   Nghệ thuật" styleClass="sidebar-item" maxWidth="Infinity"/>
+            <Button text="🚗   Phương tiện" styleClass="sidebar-item" maxWidth="Infinity"/>
+            <Button text="💎   Trang sức" styleClass="sidebar-item" maxWidth="Infinity"/>
+        </VBox>
+    </left>
+
+    <!-- ============ CENTER FEED (IG card grid) ============ -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: -fx-bg; -fx-background: -fx-bg;">
+            <VBox spacing="20">
+                <padding><Insets top="20" right="24" bottom="24" left="24"/></padding>
+
+                <!-- Filter chip row -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Phiên đấu giá" styleClass="h2"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <ComboBox fx:id="sortBox" promptText="Sắp xếp" prefWidth="180"/>
+                </HBox>
+
+                <!-- Card grid (auctions) -->
+                <FlowPane fx:id="auctionGrid" hgap="16" vgap="16"/>
+
+                <!-- TableView (Tuần 7 - Task 2.5 yêu cầu) -->
+                <Label text="Tất cả phiên đấu giá" styleClass="h2"/>
+                <VBox styleClass="card">
+                    <TableView fx:id="auctionTable" prefHeight="280">
+                        <columns>
+                            <TableColumn fx:id="colName"   text="Sản phẩm"     prefWidth="220"/>
+                            <TableColumn fx:id="colCat"    text="Danh mục"     prefWidth="120"/>
+                            <TableColumn fx:id="colSeller" text="Người bán"    prefWidth="140"/>
+                            <TableColumn fx:id="colBid"    text="Giá hiện tại" prefWidth="160"/>
+                            <TableColumn fx:id="colTime"   text="Thời gian"    prefWidth="120"/>
+                            <TableColumn fx:id="colStatus" text="Trạng thái"   prefWidth="120"/>
+                        </columns>
+                        <placeholder><Label text="Chưa có phiên nào." styleClass="muted"/></placeholder>
+                    </TableView>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <!-- ============ RIGHT SIDEBAR (trending) ============ -->
+    <right>
+        <VBox styleClass="sidebar" spacing="14" prefWidth="280">
+            <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+            <Label text="🔥 Đang sôi nổi" styleClass="h3"/>
+            <VBox fx:id="trendingBox" spacing="10"/>
+
+            <Region prefHeight="10"/>
+            <Region styleClass="divider"/>
+            <Region prefHeight="10"/>
+
+            <Label text="📊 Thống kê" styleClass="h3"/>
+            <HBox spacing="10">
+                <VBox styleClass="card,card-padded" HBox.hgrow="ALWAYS" alignment="CENTER">
+                    <Label text="12" styleClass="h2" style="-fx-text-fill: -fx-primary;"/>
+                    <Label text="Đang đấu" styleClass="caption"/>
+                </VBox>
+                <VBox styleClass="card,card-padded" HBox.hgrow="ALWAYS" alignment="CENTER">
+                    <Label text="3" styleClass="h2" style="-fx-text-fill: -fx-success;"/>
+                    <Label text="Thắng" styleClass="caption"/>
+                </VBox>
+            </HBox>
+        </VBox>
+    </right>
+</BorderPane>
