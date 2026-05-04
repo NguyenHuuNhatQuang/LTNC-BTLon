@@ -304,3 +304,295 @@
     -fx-padding: 8 16 8 16;
     -fx-font-weight: bold;
 }
+
+/* ==========================================================================
+   SHOPEE/LAZADA-INSPIRED COMPONENTS  (vẫn dùng tone xanh)
+   ========================================================================== */
+
+/* ---------- LOGIN BACKDROP (Shopee full-bg) ---------- */
+.login-backdrop {
+    -fx-background-color: linear-gradient(135deg, #1877F2 0%, #0095F6 50%, #00C2FF 100%);
+}
+.login-card-shopee {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 20, 0, 0, 8);
+}
+.brand-shopee {
+    -fx-font-size: 42;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-primary;
+}
+.btn-cta {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: white;
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 14 20 14 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(24,119,242,0.35), 8, 0, 0, 3);
+}
+.btn-cta:hover { -fx-background-color: -fx-primary-hover; }
+.tab-pill {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-text-secondary;
+    -fx-font-size: 16;
+    -fx-font-weight: bold;
+    -fx-padding: 10 0 10 0;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+}
+.tab-pill-active {
+    -fx-text-fill: -fx-primary;
+    -fx-border-color: transparent transparent -fx-primary transparent;
+    -fx-border-width: 0 0 3 0;
+}
+.social-btn {
+    -fx-background-color: white;
+    -fx-text-fill: -fx-text;
+    -fx-font-weight: bold;
+    -fx-border-color: -fx-border;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 10 16 10 16;
+    -fx-cursor: hand;
+}
+.social-btn:hover { -fx-background-color: -fx-bg; }
+
+/* ---------- HEADER (Shopee main header có gradient) ---------- */
+.header-shopee {
+    -fx-background-color: linear-gradient(to right, #1877F2, #0095F6);
+    -fx-padding: 12 24 12 24;
+}
+.header-shopee .label, .header-shopee .button {
+    -fx-text-fill: white;
+}
+.header-search-shopee {
+    -fx-background-color: white;
+    -fx-background-radius: 4;
+    -fx-padding: 10 14 10 14;
+    -fx-font-size: 14;
+    -fx-prompt-text-fill: -fx-text-secondary;
+}
+.header-search-shopee:focused { -fx-background-color: white; }
+.header-search-btn {
+    -fx-background-color: -fx-primary-hover;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 24 10 24;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+}
+.header-search-btn:hover { -fx-background-color: #0E5BC2; }
+.header-cart-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 22;
+    -fx-padding: 6 12 6 12;
+    -fx-cursor: hand;
+}
+.header-cart-btn:hover { -fx-background-color: rgba(255,255,255,0.15); -fx-background-radius: 8; }
+
+/* ---------- HERO BANNER (Shopee carousel) ---------- */
+.hero-banner {
+    -fx-background-color: linear-gradient(135deg, #1877F2, #9B51E0);
+    -fx-background-radius: 12;
+}
+.hero-text-big {
+    -fx-font-size: 36;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+.hero-text-sub {
+    -fx-font-size: 16;
+    -fx-text-fill: rgba(255,255,255,0.92);
+}
+.hero-cta {
+    -fx-background-color: white;
+    -fx-text-fill: -fx-primary;
+    -fx-font-weight: bold;
+    -fx-padding: 12 24 12 24;
+    -fx-background-radius: 50;
+    -fx-cursor: hand;
+}
+.dot-indicator {
+    -fx-min-width: 8; -fx-min-height: 8;
+    -fx-max-width: 8; -fx-max-height: 8;
+    -fx-background-radius: 50;
+    -fx-background-color: rgba(255,255,255,0.5);
+}
+.dot-indicator-active {
+    -fx-background-color: white;
+    -fx-min-width: 24; -fx-max-width: 24;
+}
+
+/* ---------- CATEGORY STRIP (Shopee 10 round icons) ---------- */
+.category-icon {
+    -fx-min-width: 64; -fx-min-height: 64;
+    -fx-max-width: 64; -fx-max-height: 64;
+    -fx-background-color: -fx-primary-light;
+    -fx-background-radius: 50;
+    -fx-alignment: CENTER;
+    -fx-font-size: 28;
+    -fx-cursor: hand;
+}
+.category-icon:hover { -fx-background-color: #D5E8FA; }
+.category-label {
+    -fx-font-size: 12;
+    -fx-text-fill: -fx-text;
+    -fx-alignment: CENTER;
+}
+
+/* ---------- FLASH AUCTION BAND (Shopee flash sale) ---------- */
+.flash-band {
+    -fx-background-color: linear-gradient(to right, #FA383E, #FF7A00);
+    -fx-background-radius: 12 12 0 0;
+    -fx-padding: 14 20 14 20;
+}
+.flash-title {
+    -fx-text-fill: white;
+    -fx-font-size: 22;
+    -fx-font-weight: bold;
+}
+.flash-timer-block {
+    -fx-background-color: rgba(0,0,0,0.4);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16;
+    -fx-padding: 4 8 4 8;
+    -fx-background-radius: 4;
+}
+.flash-body {
+    -fx-background-color: white;
+    -fx-background-radius: 0 0 12 12;
+    -fx-padding: 16;
+}
+
+/* ---------- PRODUCT CARD (Shopee item) ---------- */
+.product-card {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-color: #F0F2F5;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+}
+.product-card:hover {
+    -fx-border-color: -fx-primary;
+    -fx-effect: dropshadow(gaussian, rgba(24,119,242,0.20), 12, 0, 0, 4);
+}
+.discount-badge {
+    -fx-background-color: -fx-error;
+    -fx-text-fill: white;
+    -fx-font-size: 11;
+    -fx-font-weight: bold;
+    -fx-padding: 2 6 2 6;
+    -fx-background-radius: 4;
+}
+.sold-count { -fx-font-size: 11; -fx-text-fill: -fx-text-secondary; }
+
+/* ---------- WATCHLIST ROW ---------- */
+.watch-row {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 14;
+    -fx-border-color: transparent;
+    -fx-border-radius: 12;
+}
+.watch-row:hover { -fx-border-color: -fx-primary; }
+
+/* ---------- LIVE AUCTION ---------- */
+.live-pill {
+    -fx-background-color: -fx-error;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13;
+    -fx-padding: 4 10 4 10;
+    -fx-background-radius: 50;
+}
+.live-bid-feed {
+    -fx-background-color: #0F1419;
+    -fx-background-radius: 12;
+    -fx-padding: 12;
+}
+.live-bid-msg {
+    -fx-text-fill: white;
+    -fx-font-size: 13;
+    -fx-padding: 4 0 4 0;
+}
+.live-bid-user { -fx-text-fill: #4FC3F7; -fx-font-weight: bold; }
+.live-bid-amount { -fx-text-fill: #FFD54F; -fx-font-weight: bold; }
+.live-stats-card {
+    -fx-background-color: linear-gradient(135deg, #1877F2, #0095F6);
+    -fx-background-radius: 12;
+    -fx-padding: 16;
+}
+.live-stats-card .label { -fx-text-fill: white; }
+
+/* ---------- BOTTOM NAV (Shopee mobile feel) ---------- */
+.bottom-nav {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, -2);
+    -fx-padding: 8 0 8 0;
+}
+.bottom-nav-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-text-secondary;
+    -fx-font-size: 11;
+    -fx-content-display: TOP;
+    -fx-graphic-text-gap: 4;
+    -fx-cursor: hand;
+}
+.bottom-nav-item:hover { -fx-text-fill: -fx-primary; }
+.bottom-nav-item-active { -fx-text-fill: -fx-primary; -fx-font-weight: bold; }
+
+/* ---------- NOTIFICATION ROW ---------- */
+.noti-row {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-padding: 14;
+    -fx-cursor: hand;
+}
+.noti-row:hover { -fx-background-color: -fx-primary-light; }
+.noti-row-unread { -fx-background-color: #F4F9FF; }
+.noti-dot {
+    -fx-min-width: 8; -fx-min-height: 8;
+    -fx-max-width: 8; -fx-max-height: 8;
+    -fx-background-color: -fx-accent;
+    -fx-background-radius: 50;
+}
+
+/* ---------- PROFILE ---------- */
+.profile-banner {
+    -fx-background-color: linear-gradient(135deg, #1877F2, #0095F6);
+    -fx-background-radius: 12;
+    -fx-padding: 24;
+}
+.avatar-large {
+    -fx-min-width: 80; -fx-min-height: 80;
+    -fx-max-width: 80; -fx-max-height: 80;
+    -fx-background-color: white;
+    -fx-text-fill: -fx-primary;
+    -fx-font-size: 32;
+    -fx-font-weight: bold;
+    -fx-background-radius: 50;
+    -fx-alignment: CENTER;
+}
+.stat-mini {
+    -fx-text-fill: white;
+    -fx-font-size: 22;
+    -fx-font-weight: bold;
+}
+.stat-mini-label {
+    -fx-text-fill: rgba(255,255,255,0.85);
+    -fx-font-size: 12;
+}
+
+/* ---------- TABS ---------- */
+.tab-bar {
+    -fx-background-color: white;
+    -fx-background-radius: 12 12 0 0;
+    -fx-padding: 0 16 0 16;
+    -fx-spacing: 24;
+}
+.tab-bar .button { -fx-background-color: transparent; }
