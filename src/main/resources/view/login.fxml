@@ -3,57 +3,113 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
-<HBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.auction.client.controller.LoginController"
-      prefWidth="1100" prefHeight="720" alignment="CENTER">
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.auction.client.controller.LoginController"
+           styleClass="login-backdrop" prefWidth="1280" prefHeight="800">
 
-    <!-- LEFT: brand panel với gradient xanh -->
-    <VBox HBox.hgrow="ALWAYS" alignment="CENTER" spacing="16"
-          style="-fx-background-color: linear-gradient(to bottom right, #1877F2, #0095F6);"
-          prefWidth="500">
-        <padding><Insets top="40" right="60" bottom="40" left="60"/></padding>
+    <!-- Decorative blobs cho có chiều sâu kiểu Lazada -->
+    <Region prefWidth="280" prefHeight="280" maxWidth="280" maxHeight="280"
+            StackPane.alignment="TOP_LEFT"
+            style="-fx-background-color: rgba(255,255,255,0.08); -fx-background-radius: 50;">
+        <StackPane.margin><Insets top="-80" left="-80"/></StackPane.margin>
+    </Region>
+    <Region prefWidth="320" prefHeight="320" maxWidth="320" maxHeight="320"
+            StackPane.alignment="BOTTOM_RIGHT"
+            style="-fx-background-color: rgba(255,255,255,0.06); -fx-background-radius: 50;">
+        <StackPane.margin><Insets bottom="-100" right="-100"/></StackPane.margin>
+    </Region>
 
-        <Label text="BidNow" style="-fx-font-size: 56; -fx-font-weight: bold; -fx-text-fill: white;"/>
-        <Label wrapText="true" text="Sàn đấu giá trực tuyến realtime."
-               style="-fx-font-size: 22; -fx-text-fill: white; -fx-font-weight: bold;"/>
-        <Label wrapText="true"
-               text="Tìm kiếm món đồ độc đáo, đấu giá minh bạch, kết nối với cộng đồng người chơi đam mê."
-               style="-fx-font-size: 15; -fx-text-fill: rgba(255,255,255,0.92);"/>
+    <!-- Branding header -->
+    <VBox alignment="TOP_CENTER" StackPane.alignment="TOP_CENTER" spacing="6">
+        <padding><Insets top="50"/></padding>
+        <Label text="BidNow" style="-fx-font-size: 38; -fx-font-weight: bold; -fx-text-fill: white;"/>
+        <Label text="Sàn đấu giá trực tuyến #1 Việt Nam"
+               style="-fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 14;"/>
     </VBox>
 
-    <!-- RIGHT: form login -->
-    <VBox alignment="CENTER" prefWidth="600" spacing="0">
-        <padding><Insets top="40" right="60" bottom="40" left="60"/></padding>
+    <!-- Center card -->
+    <VBox styleClass="login-card-shopee" alignment="TOP_CENTER" spacing="0"
+          maxWidth="440" maxHeight="600">
+        <padding><Insets top="32" right="36" bottom="32" left="36"/></padding>
 
-        <VBox styleClass="card,card-padded" maxWidth="400" spacing="14">
-            <Label text="Đăng nhập" styleClass="h1"/>
-            <Label text="Chào mừng bạn quay lại với BidNow" styleClass="muted"/>
-
-            <Region prefHeight="8"/>
-
-            <Label text="Tên đăng nhập hoặc email" styleClass="caption"/>
-            <TextField fx:id="usernameField" promptText="vd: nam_dev"/>
-
-            <Label text="Mật khẩu" styleClass="caption"/>
-            <PasswordField fx:id="passwordField" promptText="••••••••"/>
-
-            <Label fx:id="errorLabel" styleClass="error-text" visible="false" managed="false"/>
-
-            <Button text="Đăng nhập" styleClass="btn-primary" maxWidth="Infinity"
-                    onAction="#handleLogin"/>
-
-            <Hyperlink text="Quên mật khẩu?" style="-fx-text-fill: -fx-primary;"
-                       onAction="#handleForgot"/>
-
-            <Separator/>
-
-            <Button text="Tạo tài khoản mới" styleClass="btn-accent" maxWidth="Infinity"
-                    onAction="#handleGoRegister"/>
-        </VBox>
+        <!-- Tab Login / Register -->
+        <HBox alignment="CENTER" spacing="40">
+            <Button fx:id="tabLoginBtn"   text="Đăng nhập" styleClass="tab-pill,tab-pill-active" onAction="#handleSwitchToLogin"/>
+            <Button fx:id="tabRegisterBtn" text="Đăng ký"   styleClass="tab-pill"                onAction="#handleGoRegister"/>
+        </HBox>
 
         <Region prefHeight="20"/>
-        <Label text="© 2026 BidNow • LTNC Team" styleClass="caption"/>
+
+        <Label fx:id="welcomeLbl" text="Chào mừng quay lại!" styleClass="h2"/>
+        <Label text="Đăng nhập để tham gia đấu giá realtime" styleClass="muted"/>
+
+        <Region prefHeight="20"/>
+
+        <!-- Username field -->
+        <HBox styleClass="text-field" alignment="CENTER_LEFT" spacing="8"
+              style="-fx-background-color: #F0F2F5; -fx-background-radius: 6; -fx-padding: 0 14 0 14;">
+            <Label text="👤" style="-fx-font-size: 16;"/>
+            <TextField fx:id="usernameField" promptText="Email / Số điện thoại / Tên đăng nhập"
+                       HBox.hgrow="ALWAYS"
+                       style="-fx-background-color: transparent; -fx-padding: 12 0 12 0;"/>
+        </HBox>
+
+        <Region prefHeight="12"/>
+
+        <!-- Password field -->
+        <HBox styleClass="text-field" alignment="CENTER_LEFT" spacing="8"
+              style="-fx-background-color: #F0F2F5; -fx-background-radius: 6; -fx-padding: 0 14 0 14;">
+            <Label text="🔒" style="-fx-font-size: 16;"/>
+            <PasswordField fx:id="passwordField" promptText="Mật khẩu"
+                           HBox.hgrow="ALWAYS"
+                           style="-fx-background-color: transparent; -fx-padding: 12 0 12 0;"/>
+        </HBox>
+
+        <Region prefHeight="6"/>
+
+        <HBox alignment="CENTER_RIGHT">
+            <Hyperlink text="Quên mật khẩu?" onAction="#handleForgot"
+                       style="-fx-text-fill: -fx-primary; -fx-font-size: 13;"/>
+        </HBox>
+
+        <Label fx:id="errorLabel" styleClass="error-text" visible="false" managed="false"/>
+
+        <Region prefHeight="14"/>
+
+        <Button text="ĐĂNG NHẬP" styleClass="btn-cta" maxWidth="Infinity" onAction="#handleLogin"/>
+
+        <Region prefHeight="20"/>
+
+        <!-- Divider -->
+        <HBox alignment="CENTER" spacing="10">
+            <Region styleClass="divider" HBox.hgrow="ALWAYS"/>
+            <Label text="HOẶC ĐĂNG NHẬP VỚI" styleClass="caption"/>
+            <Region styleClass="divider" HBox.hgrow="ALWAYS"/>
+        </HBox>
+
+        <Region prefHeight="14"/>
+
+        <HBox spacing="10" alignment="CENTER">
+            <Button text="📘  Facebook" styleClass="social-btn" HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                    onAction="#handleSocialLogin"/>
+            <Button text="🅶  Google"   styleClass="social-btn" HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                    onAction="#handleSocialLogin"/>
+        </HBox>
+
+        <Region prefHeight="20"/>
+
+        <HBox alignment="CENTER" spacing="6">
+            <Label text="Mới biết đến BidNow?" styleClass="muted"/>
+            <Hyperlink text="Đăng ký ngay" onAction="#handleGoRegister"
+                       style="-fx-text-fill: -fx-primary; -fx-font-weight: bold;"/>
+        </HBox>
     </VBox>
-</HBox>
+
+    <!-- Footer -->
+    <Label text="© 2026 BidNow • LTNC Team • Bằng việc đăng nhập, bạn đồng ý với Điều khoản dịch vụ"
+           StackPane.alignment="BOTTOM_CENTER"
+           style="-fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 12;">
+        <StackPane.margin><Insets bottom="20"/></StackPane.margin>
+    </Label>
+</StackPane>
