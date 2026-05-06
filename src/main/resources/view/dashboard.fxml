@@ -8,116 +8,173 @@
             fx:controller="com.auction.client.controller.DashboardController"
             prefWidth="1280" prefHeight="800">
 
-    <!-- ============ TOP NAVBAR (FB style) ============ -->
+    <!-- ============ HEADER (Shopee gradient) ============ -->
     <top>
-        <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="20">
-            <Label text="BidNow" styleClass="navbar-logo"/>
+        <VBox>
+            <HBox styleClass="header-shopee" alignment="CENTER_LEFT" spacing="16">
+                <Label text="🔨 BidNow" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: white;"/>
 
-            <TextField fx:id="searchField" styleClass="navbar-search"
-                       promptText="🔍  Tìm kiếm phiên đấu giá, sản phẩm…"/>
+                <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="0">
+                    <TextField fx:id="searchField" styleClass="header-search-shopee" HBox.hgrow="ALWAYS"
+                               promptText="Tìm kiếm phiên đấu giá, sản phẩm, người bán…"/>
+                    <Button text="🔍  TÌM" styleClass="header-search-btn"/>
+                </HBox>
 
-            <Region HBox.hgrow="ALWAYS"/>
+                <Button text="🔔" styleClass="header-cart-btn" onAction="#handleNotifications"/>
+                <Button text="🛒" styleClass="header-cart-btn" onAction="#handleWatchlist"/>
+                <Button text="+ Đăng" styleClass="header-cart-btn" onAction="#handleCreateItem"/>
 
-            <Button text="+ Đăng sản phẩm" styleClass="btn-accent"
-                    onAction="#handleCreateItem"/>
-            <Button text="🔔" styleClass="btn-icon" onAction="#handleNotifications"/>
-
-            <HBox alignment="CENTER" spacing="8">
-                <Label fx:id="avatarLabel" text="N" styleClass="avatar-circle"/>
-                <Label fx:id="userNameLabel" text="nam_dev" style="-fx-font-weight: bold;"/>
+                <HBox alignment="CENTER" spacing="8">
+                    <Label fx:id="avatarLabel" text="N" styleClass="avatar-circle"
+                           style="-fx-background-color: white; -fx-text-fill: -fx-primary;"/>
+                    <VBox spacing="0">
+                        <Label fx:id="userNameLabel" text="nam_dev" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                        <Label text="Bidder" style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 11;"/>
+                    </VBox>
+                </HBox>
+                <Button text="⏻" styleClass="header-cart-btn" onAction="#handleLogout"/>
             </HBox>
-            <Button text="Đăng xuất" styleClass="btn-ghost" onAction="#handleLogout"/>
-        </HBox>
+
+            <!-- Quick search keywords -->
+            <HBox styleClass="header-shopee" alignment="CENTER_LEFT" spacing="12"
+                  style="-fx-background-color: #166FE5; -fx-padding: 6 24 8 24;">
+                <Label text="Đang HOT:" style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12;"/>
+                <Hyperlink text="Macbook M3" style="-fx-text-fill: white; -fx-font-size: 12;"/>
+                <Hyperlink text="iPhone 15" style="-fx-text-fill: white; -fx-font-size: 12;"/>
+                <Hyperlink text="Rolex"     style="-fx-text-fill: white; -fx-font-size: 12;"/>
+                <Hyperlink text="Honda Civic" style="-fx-text-fill: white; -fx-font-size: 12;"/>
+                <Hyperlink text="Tranh sơn dầu" style="-fx-text-fill: white; -fx-font-size: 12;"/>
+            </HBox>
+        </VBox>
     </top>
 
-    <!-- ============ LEFT SIDEBAR ============ -->
-    <left>
-        <VBox styleClass="sidebar" spacing="4">
-            <padding><Insets top="16" right="12" bottom="16" left="12"/></padding>
-
-            <Button fx:id="navHomeBtn" text="🏠   Trang chủ" styleClass="sidebar-item,sidebar-item-active"
-                    maxWidth="Infinity" onAction="#handleNavHome"/>
-            <Button text="🟢   Đang Live" styleClass="sidebar-item"
-                    maxWidth="Infinity" onAction="#handleNavLive"/>
-            <Button text="⭐   Theo dõi" styleClass="sidebar-item"
-                    maxWidth="Infinity" onAction="#handleNavWatching"/>
-            <Button text="📦   Sản phẩm của tôi" styleClass="sidebar-item"
-                    maxWidth="Infinity" onAction="#handleNavMyItems"/>
-            <Button text="📜   Lịch sử bid" styleClass="sidebar-item"
-                    maxWidth="Infinity" onAction="#handleNavHistory"/>
-
-            <Region prefHeight="20"/>
-            <Region styleClass="divider"/>
-            <Region prefHeight="12"/>
-
-            <Label text="DANH MỤC" styleClass="caption">
-                <padding><Insets left="12"/></padding>
-            </Label>
-            <Button text="📱   Điện tử" styleClass="sidebar-item" maxWidth="Infinity"/>
-            <Button text="🎨   Nghệ thuật" styleClass="sidebar-item" maxWidth="Infinity"/>
-            <Button text="🚗   Phương tiện" styleClass="sidebar-item" maxWidth="Infinity"/>
-            <Button text="💎   Trang sức" styleClass="sidebar-item" maxWidth="Infinity"/>
-        </VBox>
-    </left>
-
-    <!-- ============ CENTER FEED (IG card grid) ============ -->
     <center>
         <ScrollPane fitToWidth="true" style="-fx-background-color: -fx-bg; -fx-background: -fx-bg;">
             <VBox spacing="20">
-                <padding><Insets top="20" right="24" bottom="24" left="24"/></padding>
+                <padding><Insets top="20" right="40" bottom="24" left="40"/></padding>
 
-                <!-- Filter chip row -->
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="Phiên đấu giá" styleClass="h2"/>
+                <!-- ============ HERO BANNER ============ -->
+                <HBox spacing="14">
+                    <StackPane styleClass="hero-banner" HBox.hgrow="ALWAYS" prefHeight="240">
+                        <VBox alignment="CENTER_LEFT" spacing="12">
+                            <padding><Insets left="40"/></padding>
+                            <Label text="ĐẤU GIÁ TUẦN VÀNG" styleClass="hero-text-sub"
+                                   style="-fx-font-weight: bold; -fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 14;"/>
+                            <Label text="Macbook M3 - Giá khởi điểm 0₫" styleClass="hero-text-big" wrapText="true"/>
+                            <Label text="3 ngày, 50+ phiên, hàng chính hãng có hóa đơn." styleClass="hero-text-sub"/>
+                            <Button text="🔥  THAM GIA NGAY" styleClass="hero-cta"/>
+                        </VBox>
+                        <HBox alignment="BOTTOM_CENTER" spacing="6" StackPane.alignment="BOTTOM_CENTER">
+                            <StackPane.margin><Insets bottom="14"/></StackPane.margin>
+                            <Region styleClass="dot-indicator,dot-indicator-active"/>
+                            <Region styleClass="dot-indicator"/>
+                            <Region styleClass="dot-indicator"/>
+                        </HBox>
+                    </StackPane>
+
+                    <VBox spacing="14" prefWidth="280">
+                        <StackPane prefHeight="113"
+                                   style="-fx-background-color: linear-gradient(135deg, #FA383E, #FF7A00); -fx-background-radius: 12;">
+                            <VBox alignment="CENTER_LEFT" spacing="4">
+                                <padding><Insets left="20"/></padding>
+                                <Label text="⚡ FLASH AUCTION" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13;"/>
+                                <Label text="Kết thúc trong" style="-fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 11;"/>
+                                <Label text="01:23:45" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 22;"/>
+                            </VBox>
+                        </StackPane>
+                        <StackPane prefHeight="113"
+                                   style="-fx-background-color: linear-gradient(135deg, #42B72A, #009A66); -fx-background-radius: 12;">
+                            <VBox alignment="CENTER_LEFT" spacing="4">
+                                <padding><Insets left="20"/></padding>
+                                <Label text="🎁 NEWBIE DEAL" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13;"/>
+                                <Label text="Người mới đăng ký" style="-fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 11;"/>
+                                <Label text="Giảm phí giao dịch" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16;"/>
+                            </VBox>
+                        </StackPane>
+                    </VBox>
+                </HBox>
+
+                <!-- ============ CATEGORY STRIP ============ -->
+                <VBox styleClass="card,card-padded" spacing="14">
+                    <Label text="DANH MỤC" styleClass="h3"/>
+                    <HBox spacing="20" alignment="CENTER">
+                        <VBox alignment="CENTER" spacing="6"><Label text="📱" styleClass="category-icon"/><Label text="Điện tử" styleClass="category-label"/></VBox>
+                        <VBox alignment="CENTER" spacing="6"><Label text="🎨" styleClass="category-icon"/><Label text="Nghệ thuật" styleClass="category-label"/></VBox>
+                        <VBox alignment="CENTER" spacing="6"><Label text="🚗" styleClass="category-icon"/><Label text="Xe cộ" styleClass="category-label"/></VBox>
+                        <VBox alignment="CENTER" spacing="6"><Label text="💎" styleClass="category-icon"/><Label text="Trang sức" styleClass="category-label"/></VBox>
+                        <VBox alignment="CENTER" spacing="6"><Label text="⌚" styleClass="category-icon"/><Label text="Đồng hồ" styleClass="category-label"/></VBox>
+                        <VBox alignment="CENTER" spacing="6"><Label text="📷" styleClass="category-icon"/><Label text="Máy ảnh" styleClass="category-label"/></VBox>
+                        <VBox alignment="CENTER" spacing="6"><Label text="📚" styleClass="category-icon"/><Label text="Sách" styleClass="category-label"/></VBox>
+                        <VBox alignment="CENTER" spacing="6"><Label text="🏺" styleClass="category-icon"/><Label text="Cổ vật" styleClass="category-label"/></VBox>
+                        <VBox alignment="CENTER" spacing="6"><Label text="🎮" styleClass="category-icon"/><Label text="Game" styleClass="category-label"/></VBox>
+                        <VBox alignment="CENTER" spacing="6"><Label text="⋯" styleClass="category-icon"/><Label text="Tất cả" styleClass="category-label"/></VBox>
+                    </HBox>
+                </VBox>
+
+                <!-- ============ FLASH AUCTION BAND ============ -->
+                <VBox spacing="0">
+                    <HBox styleClass="flash-band" alignment="CENTER_LEFT" spacing="14">
+                        <Label text="⚡" style="-fx-font-size: 26; -fx-text-fill: white;"/>
+                        <Label text="FLASH AUCTION" styleClass="flash-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="Kết thúc:" style="-fx-text-fill: white; -fx-font-size: 12;"/>
+                        <Label text="01" styleClass="flash-timer-block"/>
+                        <Label text=":" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                        <Label text="23" styleClass="flash-timer-block"/>
+                        <Label text=":" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                        <Label text="45" styleClass="flash-timer-block"/>
+                        <Hyperlink text="Xem tất cả  ›" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                    </HBox>
+                    <HBox styleClass="flash-body" spacing="14" fx:id="flashRow"/>
+                </VBox>
+
+                <!-- ============ ĐỀ XUẤT CHO BẠN ============ -->
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="✨ ĐỀ XUẤT CHO BẠN" styleClass="h2"/>
                     <Region HBox.hgrow="ALWAYS"/>
                     <ComboBox fx:id="sortBox" promptText="Sắp xếp" prefWidth="180"/>
                 </HBox>
+                <FlowPane fx:id="auctionGrid" hgap="14" vgap="14"/>
 
-                <!-- Card grid (auctions) -->
-                <FlowPane fx:id="auctionGrid" hgap="16" vgap="16"/>
-
-                <!-- TableView (Tuần 7 - Task 2.5 yêu cầu) -->
-                <Label text="Tất cả phiên đấu giá" styleClass="h2"/>
+                <!-- TableView (giữ Task 2.5 - Tuần 7 yêu cầu) -->
+                <Label text="📋 Tất cả phiên đấu giá" styleClass="h2"/>
                 <VBox styleClass="card">
                     <TableView fx:id="auctionTable" prefHeight="280">
                         <columns>
-                            <TableColumn fx:id="colName"   text="Sản phẩm"     prefWidth="220"/>
+                            <TableColumn fx:id="colName"   text="Sản phẩm"     prefWidth="240"/>
                             <TableColumn fx:id="colCat"    text="Danh mục"     prefWidth="120"/>
                             <TableColumn fx:id="colSeller" text="Người bán"    prefWidth="140"/>
                             <TableColumn fx:id="colBid"    text="Giá hiện tại" prefWidth="160"/>
-                            <TableColumn fx:id="colTime"   text="Thời gian"    prefWidth="120"/>
+                            <TableColumn fx:id="colTime"   text="Còn lại"      prefWidth="120"/>
                             <TableColumn fx:id="colStatus" text="Trạng thái"   prefWidth="120"/>
                         </columns>
                         <placeholder><Label text="Chưa có phiên nào." styleClass="muted"/></placeholder>
                     </TableView>
                 </VBox>
+
+                <Region prefHeight="20"/>
             </VBox>
         </ScrollPane>
     </center>
 
-    <!-- ============ RIGHT SIDEBAR (trending) ============ -->
-    <right>
-        <VBox styleClass="sidebar" spacing="14" prefWidth="280">
-            <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
-
-            <Label text="🔥 Đang sôi nổi" styleClass="h3"/>
-            <VBox fx:id="trendingBox" spacing="10"/>
-
-            <Region prefHeight="10"/>
-            <Region styleClass="divider"/>
-            <Region prefHeight="10"/>
-
-            <Label text="📊 Thống kê" styleClass="h3"/>
-            <HBox spacing="10">
-                <VBox styleClass="card,card-padded" HBox.hgrow="ALWAYS" alignment="CENTER">
-                    <Label text="12" styleClass="h2" style="-fx-text-fill: -fx-primary;"/>
-                    <Label text="Đang đấu" styleClass="caption"/>
-                </VBox>
-                <VBox styleClass="card,card-padded" HBox.hgrow="ALWAYS" alignment="CENTER">
-                    <Label text="3" styleClass="h2" style="-fx-text-fill: -fx-success;"/>
-                    <Label text="Thắng" styleClass="caption"/>
-                </VBox>
-            </HBox>
-        </VBox>
-    </right>
+    <!-- ============ BOTTOM NAV (Shopee mobile feel) ============ -->
+    <bottom>
+        <HBox styleClass="bottom-nav" alignment="CENTER" spacing="40">
+            <Button text="Trang chủ"  graphic-text-gap="2" styleClass="bottom-nav-item,bottom-nav-item-active" onAction="#handleNavHome">
+                <graphic><Label text="🏠" style="-fx-font-size: 22;"/></graphic>
+            </Button>
+            <Button text="Live"       styleClass="bottom-nav-item" onAction="#handleNavLive">
+                <graphic><Label text="🟢" style="-fx-font-size: 22;"/></graphic>
+            </Button>
+            <Button text="Theo dõi"   styleClass="bottom-nav-item" onAction="#handleWatchlist">
+                <graphic><Label text="🛒" style="-fx-font-size: 22;"/></graphic>
+            </Button>
+            <Button text="Đấu giá"    styleClass="bottom-nav-item" onAction="#handleNavMyBids">
+                <graphic><Label text="📜" style="-fx-font-size: 22;"/></graphic>
+            </Button>
+            <Button text="Tài khoản"  styleClass="bottom-nav-item" onAction="#handleNavProfile">
+                <graphic><Label text="👤" style="-fx-font-size: 22;"/></graphic>
+            </Button>
+        </HBox>
+    </bottom>
 </BorderPane>

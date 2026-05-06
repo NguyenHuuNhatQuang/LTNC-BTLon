@@ -13,7 +13,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 
 import java.net.URL;
 import java.text.NumberFormat;
@@ -28,7 +27,7 @@ public class DashboardController implements Initializable {
     @FXML private Label userNameLabel;
     @FXML private ComboBox<String> sortBox;
     @FXML private FlowPane auctionGrid;
-    @FXML private VBox trendingBox;
+    @FXML private HBox flashRow;
 
     @FXML private TableView<AuctionView> auctionTable;
     @FXML private TableColumn<AuctionView, String> colName;
@@ -43,35 +42,31 @@ public class DashboardController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         sortBox.setItems(FXCollections.observableArrayList(
-            "Mới nhất", "Sắp kết thúc", "Giá cao nhất", "Giá thấp nhất"));
+            "Mới nhất", "Sắp kết thúc", "Giá cao nhất", "Giá thấp nhất", "Lượt bid nhiều"));
         sortBox.getSelectionModel().selectFirst();
 
         ObservableList<AuctionView> data = mockData();
 
         configureTable(data);
-        configureCards(data);
-        configureTrending(data);
+        auctionGrid.getChildren().setAll(data.stream().map(this::buildProductCard).toList());
+        flashRow.getChildren().setAll(data.stream().limit(4).map(this::buildFlashCard).toList());
 
-        // Tuần 8 - Task 3.5: click đúp vào dòng -> sang AuctionDetail kèm data
+        // Tuần 8 - Task 3.5: click đúp -> AuctionDetail truyền data
         auctionTable.setRowFactory(tv -> {
             TableRow<AuctionView> row = new TableRow<>();
             row.setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2 && !row.isEmpty()) {
-                    openAuctionDetail(row.getItem());
-                }
+                if (e.getClickCount() == 2 && !row.isEmpty()) openDetail(row.getItem());
             });
             return row;
         });
 
-        // Search filter realtime
-        searchField.textProperty().addListener((obs, oldV, newV) -> {
-            String key = newV == null ? "" : newV.toLowerCase().trim();
+        searchField.textProperty().addListener((obs, o, n) -> {
+            String key = n == null ? "" : n.toLowerCase().trim();
             ObservableList<AuctionView> filtered = data.filtered(a ->
                 a.getItemName().toLowerCase().contains(key) ||
-                a.getCategory().toLowerCase().contains(key) ||
-                a.getSellerName().toLowerCase().contains(key));
+                a.getCategory().toLowerCase().contains(key));
             auctionTable.setItems(FXCollections.observableArrayList(filtered));
-            auctionGrid.getChildren().setAll(filtered.stream().map(this::buildCard).toList());
+            auctionGrid.getChildren().setAll(filtered.stream().map(this::buildProductCard).toList());
         });
     }
 
@@ -79,126 +74,132 @@ public class DashboardController implements Initializable {
         colName.setCellValueFactory(new PropertyValueFactory<>("itemName"));
         colCat.setCellValueFactory(new PropertyValueFactory<>("category"));
         colSeller.setCellValueFactory(new PropertyValueFactory<>("sellerName"));
-        colBid.setCellValueFactory(c ->
-            new SimpleStringProperty(money.format(c.getValue().getCurrentBid()) + " ₫"));
+        colBid.setCellValueFactory(c -> new SimpleStringProperty(money.format(c.getValue().getCurrentBid()) + " ₫"));
         colTime.setCellValueFactory(new PropertyValueFactory<>("timeLeft"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-        // Cell tô màu badge cho status
         colStatus.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(String s, boolean empty) {
                 super.updateItem(s, empty);
                 if (empty || s == null) { setGraphic(null); setText(null); return; }
                 Label badge = new Label(s);
-                switch (s) {
-                    case "LIVE"     -> badge.getStyleClass().add("badge-live");
-                    case "OPEN"     -> badge.getStyleClass().add("badge-open");
-                    case "FINISHED" -> badge.getStyleClass().add("badge-finished");
-                    default -> {}
-                }
-                setText(null);
-                setGraphic(badge);
+                badge.getStyleClass().add(switch (s) {
+                    case "LIVE" -> "badge-live";
+                    case "OPEN" -> "badge-open";
+                    default     -> "badge-finished";
+                });
+                setText(null); setGraphic(badge);
             }
         });
-
         auctionTable.setItems(data);
     }
 
-    private void configureCards(ObservableList<AuctionView> data) {
-        auctionGrid.getChildren().setAll(data.stream().map(this::buildCard).toList());
-    }
-
-    private void configureTrending(ObservableList<AuctionView> data) {
-        data.stream().limit(4).forEach(a -> {
-            HBox row = new HBox(10);
-            row.setAlignment(Pos.CENTER_LEFT);
-            row.setPadding(new Insets(8));
-            row.setStyle("-fx-cursor: hand; -fx-background-radius: 8;");
-            row.setOnMouseEntered(e -> row.setStyle("-fx-background-color: -fx-bg; -fx-background-radius: 8; -fx-cursor: hand;"));
-            row.setOnMouseExited(e -> row.setStyle("-fx-cursor: hand; -fx-background-radius: 8;"));
-            row.setOnMouseClicked(e -> openAuctionDetail(a));
-
-            Region thumb = new Region();
-            thumb.setPrefSize(48, 48);
-            thumb.getStyleClass().add("image-placeholder");
-
-            VBox info = new VBox(2);
-            Label name = new Label(a.getItemName());
-            name.setStyle("-fx-font-weight: bold;");
-            Label price = new Label(money.format(a.getCurrentBid()) + " ₫");
-            price.getStyleClass().add("muted");
-            info.getChildren().addAll(name, price);
-
-            row.getChildren().addAll(thumb, info);
-            trendingBox.getChildren().add(row);
-        });
-    }
-
-    /**
-     * Card 1 phiên đấu giá - kiểu Instagram post.
-     */
-    private VBox buildCard(AuctionView a) {
+    /** Card kiểu Shopee product: ảnh - tên - giá lớn - sold count - badge giảm. */
+    private VBox buildProductCard(AuctionView a) {
         VBox card = new VBox(0);
-        card.getStyleClass().add("auction-card");
-        card.setPrefWidth(260);
-        card.setOnMouseClicked(e -> openAuctionDetail(a));
+        card.getStyleClass().add("product-card");
+        card.setPrefWidth(220);
+        card.setOnMouseClicked(e -> openDetail(a));
 
-        // Image header (gradient placeholder)
+        StackPane imgWrap = new StackPane();
         Region img = new Region();
         img.setPrefHeight(180);
         img.setStyle("-fx-background-color: linear-gradient(to bottom right, " + colorFor(a.getCategory()) + ");"
-                  + "-fx-background-radius: 12 12 0 0;");
+                  + "-fx-background-radius: 8 8 0 0;");
 
-        // Status badge overlay
-        Label badge = new Label(a.getStatus());
-        badge.getStyleClass().add(switch (a.getStatus()) {
+        // Discount badge (giả lập)
+        Label discount = new Label("-" + (10 + (a.getId().hashCode() & 30)) + "%");
+        discount.getStyleClass().add("discount-badge");
+        StackPane.setAlignment(discount, Pos.TOP_LEFT);
+        StackPane.setMargin(discount, new Insets(8));
+
+        Label statusBadge = new Label(a.getStatus());
+        statusBadge.getStyleClass().add(switch (a.getStatus()) {
             case "LIVE" -> "badge-live";
             case "OPEN" -> "badge-open";
             default     -> "badge-finished";
         });
-        StackPane imgWrap = new StackPane(img, badge);
-        StackPane.setAlignment(badge, Pos.TOP_RIGHT);
-        StackPane.setMargin(badge, new Insets(12));
+        StackPane.setAlignment(statusBadge, Pos.TOP_RIGHT);
+        StackPane.setMargin(statusBadge, new Insets(8));
 
-        // Body
-        VBox body = new VBox(6);
-        body.setPadding(new Insets(14));
+        imgWrap.getChildren().addAll(img, discount, statusBadge);
+
+        VBox body = new VBox(4);
+        body.setPadding(new Insets(10));
 
         Label name = new Label(a.getItemName());
-        name.getStyleClass().add("h3");
         name.setWrapText(true);
+        name.setStyle("-fx-font-size: 13;");
+        name.setMaxHeight(36);
 
-        Label seller = new Label("@" + a.getSellerName() + " • " + a.getCategory());
-        seller.getStyleClass().add("muted");
-
-        HBox priceRow = new HBox();
-        priceRow.setAlignment(Pos.CENTER_LEFT);
-        VBox priceBox = new VBox(2);
-        Label priceLbl = new Label("Giá hiện tại");
-        priceLbl.getStyleClass().add("caption");
         Label price = new Label(money.format(a.getCurrentBid()) + " ₫");
         price.getStyleClass().add("price-tag");
-        priceBox.getChildren().addAll(priceLbl, price);
 
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
+        HBox meta = new HBox(8);
+        Label rating = new Label("⭐ 4.8");
+        rating.setStyle("-fx-font-size: 11; -fx-text-fill: -fx-warning;");
+        Label sold = new Label("Đã bid: " + (10 + (a.getId().hashCode() & 50)));
+        sold.getStyleClass().add("sold-count");
+        meta.getChildren().addAll(rating, new Region() {{ HBox.setHgrow(this, Priority.ALWAYS); }}, sold);
 
-        Label time = new Label("⏱  " + a.getTimeLeft());
-        time.getStyleClass().add("muted");
+        Label time = new Label("⏱ " + a.getTimeLeft());
+        time.setStyle("-fx-font-size: 11; -fx-text-fill: -fx-error; -fx-font-weight: bold;");
 
-        priceRow.getChildren().addAll(priceBox, spacer, time);
-
-        Button bidBtn = new Button("Vào đấu giá →");
-        bidBtn.getStyleClass().add("btn-secondary");
-        bidBtn.setMaxWidth(Double.MAX_VALUE);
-        bidBtn.setOnAction(e -> openAuctionDetail(a));
-
-        body.getChildren().addAll(name, seller, new Region(){{ setPrefHeight(4); }}, priceRow, bidBtn);
-
+        body.getChildren().addAll(name, price, meta, time);
         card.getChildren().addAll(imgWrap, body);
         return card;
     }
+
+    /** Card cho Flash band (smaller, có giá gạch ngang). */
+    private VBox buildFlashCard(AuctionView a) {
+        VBox card = new VBox(6);
+        card.setPrefWidth(160);
+        card.setStyle("-fx-cursor: hand;");
+        card.setOnMouseClicked(e -> openDetail(a));
+
+        Region img = new Region();
+        img.setPrefHeight(140);
+        img.setStyle("-fx-background-color: linear-gradient(to bottom right, " + colorFor(a.getCategory()) + ");"
+                  + "-fx-background-radius: 8;");
+
+        Label price = new Label(money.format(a.getCurrentBid()) + " ₫");
+        price.setStyle("-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: -fx-error;");
+
+        Label oldPrice = new Label(money.format(a.getCurrentBid() * 1.4) + " ₫");
+        oldPrice.setStyle("-fx-font-size: 11; -fx-text-fill: -fx-text-secondary; -fx-strikethrough: true;");
+
+        // Progress bar
+        Region progress = new Region();
+        progress.setPrefHeight(6);
+        progress.setStyle("-fx-background-color: linear-gradient(to right, #FA383E 70%, #FFCFD2 70%);"
+                        + "-fx-background-radius: 50;");
+
+        Label progressLbl = new Label("ĐANG BID NHANH");
+        progressLbl.setStyle("-fx-font-size: 10; -fx-text-fill: -fx-error; -fx-font-weight: bold;");
+
+        card.getChildren().addAll(img, price, oldPrice, progress, progressLbl);
+        return card;
+    }
+
+    private void openDetail(AuctionView a) {
+        SceneRouter.<AuctionDetailController>goWithData("auction-detail", c -> c.initData(a));
+    }
+
+    /* ===== Header / nav handlers ===== */
+    @FXML private void handleCreateItem()    { SceneRouter.go("create-item"); }
+    @FXML private void handleNotifications() { SceneRouter.go("notifications"); }
+    @FXML private void handleWatchlist()     { SceneRouter.go("watchlist"); }
+    @FXML private void handleLogout() {
+        if (AlertHelper.confirm("Đăng xuất", "Bạn chắc chắn muốn thoát?"))
+            SceneRouter.go("login");
+    }
+
+    /* ===== Bottom nav ===== */
+    @FXML private void handleNavHome()    { /* đang ở home */ }
+    @FXML private void handleNavLive()    { SceneRouter.go("live-auction"); }
+    @FXML private void handleNavMyBids()  { SceneRouter.go("my-bids"); }
+    @FXML private void handleNavProfile() { SceneRouter.go("profile"); }
 
     private String colorFor(String cat) {
         return switch (cat) {
@@ -210,31 +211,6 @@ public class DashboardController implements Initializable {
         };
     }
 
-    private void openAuctionDetail(AuctionView auction) {
-        SceneRouter.<AuctionDetailController>goWithData(
-            "auction-detail", c -> c.initData(auction));
-    }
-
-    /* ===== Navbar handlers ===== */
-    @FXML private void handleCreateItem() { SceneRouter.go("create-item"); }
-    @FXML private void handleNotifications() {
-        AlertHelper.info("Thông báo", "Bạn không có thông báo mới.");
-    }
-    @FXML private void handleLogout() {
-        if (AlertHelper.confirm("Đăng xuất", "Bạn chắc chắn muốn thoát?"))
-            SceneRouter.go("login");
-    }
-
-    /* ===== Sidebar handlers (placeholder) ===== */
-    @FXML private void handleNavHome()     { /* hiện đang ở home */ }
-    @FXML private void handleNavLive()     { AlertHelper.info("Live", "Lọc các phiên đang LIVE - sẽ làm Tuần 9."); }
-    @FXML private void handleNavWatching() { AlertHelper.info("Theo dõi", "Danh sách phiên bạn theo dõi - sẽ làm Tuần 9."); }
-    @FXML private void handleNavMyItems()  { AlertHelper.info("Sản phẩm của tôi", "Đang phát triển."); }
-    @FXML private void handleNavHistory()  { AlertHelper.info("Lịch sử bid", "Đang phát triển."); }
-
-    /**
-     * Mock data Tuần 7. Tuần 9+ sẽ thay bằng list từ Server.
-     */
     private ObservableList<AuctionView> mockData() {
         return FXCollections.observableArrayList(List.of(
             new AuctionView("A001", "MacBook Pro M3 14\"", "Điện tử",     "minh.tran",   42500000, "LIVE",     "02:34", ""),
