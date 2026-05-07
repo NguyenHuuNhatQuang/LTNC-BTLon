@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.auction.client.controller.WatchlistController"
+            prefWidth="1280" prefHeight="800">
+
+    <top>
+        <HBox styleClass="header-shopee" alignment="CENTER_LEFT" spacing="14">
+            <Button text="←" styleClass="header-cart-btn" onAction="#handleBack"/>
+            <Label text="🛒 Giỏ đấu giá ưu tiên" style="-fx-text-fill: white; -fx-font-size: 20; -fx-font-weight: bold;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="totalCountLbl" text="0 phiên" style="-fx-text-fill: white;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox>
+            <!-- Tabs -->
+            <HBox styleClass="tab-bar" spacing="32" style="-fx-padding: 0 24 0 24;">
+                <Button fx:id="tabWatching" text="Đang theo dõi  (5)" styleClass="tab-pill,tab-pill-active" onAction="#handleTabWatching"/>
+                <Button fx:id="tabEnding"   text="Sắp kết thúc  (2)" styleClass="tab-pill"                   onAction="#handleTabEnding"/>
+                <Button fx:id="tabWon"      text="Đã thắng  (3)"     styleClass="tab-pill"                   onAction="#handleTabWon"/>
+                <Button fx:id="tabLost"    text="Đã bỏ lỡ  (1)"     styleClass="tab-pill"                   onAction="#handleTabLost"/>
+            </HBox>
+
+            <ScrollPane fitToWidth="true" style="-fx-background-color: -fx-bg; -fx-background: -fx-bg;">
+                <VBox spacing="12" fx:id="watchList">
+                    <padding><Insets top="20" right="40" bottom="100" left="40"/></padding>
+                </VBox>
+            </ScrollPane>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox styleClass="bottom-nav" alignment="CENTER_LEFT" spacing="16" style="-fx-padding: 14 24 14 24;">
+            <CheckBox text="Chọn tất cả"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="Tổng giá trị đang theo dõi:" styleClass="muted"/>
+            <Label fx:id="totalValueLbl" text="247.400.000 ₫" styleClass="price-tag"/>
+            <Button text="📢  Đặt giá hàng loạt" styleClass="btn-secondary"/>
+            <Button text="🗑  Xóa đã chọn" styleClass="btn-ghost"/>
+        </HBox>
+    </bottom>
+</BorderPane>
