@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.auction.client.controller.LiveAuctionController"
+            prefWidth="1280" prefHeight="800">
+
+    <top>
+        <HBox styleClass="header-shopee" alignment="CENTER_LEFT" spacing="14">
+            <Button text="←" styleClass="header-cart-btn" onAction="#handleBack"/>
+            <Label text="🔴" style="-fx-font-size: 16;"/>
+            <Label text="LIVE" styleClass="live-pill"/>
+            <Label text="Phiên đấu giá: MacBook Pro M3"
+                   style="-fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="👁  234 đang xem" style="-fx-text-fill: white;"/>
+            <Label text="•" style="-fx-text-fill: white;"/>
+            <Label text="⏱  02:34" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <HBox spacing="16" style="-fx-background-color: -fx-bg;">
+            <padding><Insets top="20" right="24" bottom="24" left="24"/></padding>
+
+            <!-- LEFT: hình + thông tin sản phẩm -->
+            <VBox spacing="12" prefWidth="420">
+                <StackPane prefHeight="320" style="-fx-background-color: linear-gradient(135deg, #1877F2, #0095F6); -fx-background-radius: 12;">
+                    <Label text="🔴 LIVE" styleClass="live-pill" StackPane.alignment="TOP_LEFT">
+                        <StackPane.margin><Insets top="12" left="12"/></StackPane.margin>
+                    </Label>
+                </StackPane>
+                <VBox styleClass="card,card-padded" spacing="6">
+                    <Label text="MacBook Pro M3 14&quot; - 16GB/512GB" styleClass="h2"/>
+                    <Label text="@minh.tran • Đã xác minh" styleClass="muted"/>
+                    <Region prefHeight="4"/>
+                    <Label text="Giá khởi điểm: 29.750.000 ₫" styleClass="caption"/>
+                    <Label text="Bước giá: 500.000 ₫" styleClass="caption"/>
+                    <Label text="Tổng lượt bid: 47" styleClass="caption"/>
+                </VBox>
+            </VBox>
+
+            <!-- CENTER: live bid feed kiểu Twitch chat -->
+            <VBox spacing="10" HBox.hgrow="ALWAYS">
+                <Label text="💬 LIVE BID FEED" styleClass="h3" style="-fx-text-fill: -fx-text;"/>
+                <VBox styleClass="live-bid-feed" VBox.vgrow="ALWAYS" prefHeight="500" fx:id="liveFeed"/>
+
+                <HBox spacing="8" alignment="CENTER">
+                    <Region prefWidth="8" prefHeight="8" maxWidth="8" maxHeight="8"
+                            style="-fx-background-color: #42B72A; -fx-background-radius: 50;"/>
+                    <Label text="ĐANG KẾT NỐI REALTIME" style="-fx-text-fill: var(--success); -fx-font-size: 11;
+                                                                -fx-text-fill: #42B72A; -fx-font-weight: bold;"/>
+                </HBox>
+            </VBox>
+
+            <!-- RIGHT: leaderboard + bid -->
+            <VBox spacing="16" prefWidth="320">
+                <VBox styleClass="live-stats-card" spacing="6">
+                    <Label text="GIÁ HIỆN TẠI" style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12;"/>
+                    <Label fx:id="currentBidLbl" text="42.500.000 ₫"
+                           style="-fx-text-fill: white; -fx-font-size: 32; -fx-font-weight: bold;"/>
+                    <Label text="👑 @nam_dev đang dẫn đầu" style="-fx-text-fill: white;"/>
+                </VBox>
+
+                <VBox styleClass="card,card-padded" spacing="10">
+                    <Label text="🏆 TOP BIDDER" styleClass="h3"/>
+                    <VBox spacing="6" fx:id="leaderBoard"/>
+                </VBox>
+
+                <VBox styleClass="card,card-padded" spacing="10">
+                    <Label text="Đặt giá của bạn" styleClass="h3"/>
+                    <TextField fx:id="bidInput" promptText="43.000.000" text="43000000"/>
+                    <HBox spacing="6">
+                        <Button text="+500K" styleClass="btn-secondary" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                        <Button text="+1M"   styleClass="btn-secondary" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                        <Button text="+5M"   styleClass="btn-secondary" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                    </HBox>
+                    <Button text="🔨 ĐẶT GIÁ NGAY" styleClass="btn-cta" maxWidth="Infinity"
+                            onAction="#handlePlaceBid"/>
+                    <Label fx:id="statusLbl" styleClass="caption"/>
+                </VBox>
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>
