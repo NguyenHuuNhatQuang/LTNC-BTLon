@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.auction.client.controller.ProfileController"
+            prefWidth="1280" prefHeight="800">
+    <top>
+        <HBox styleClass="header-shopee" alignment="CENTER_LEFT" spacing="14">
+            <Button text="←" styleClass="header-cart-btn" onAction="#handleBack"/>
+            <Label text="👤 Tài khoản của tôi" style="-fx-text-fill: white; -fx-font-size: 20; -fx-font-weight: bold;"/>
+        </HBox>
+    </top>
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: -fx-bg; -fx-background: -fx-bg;">
+            <VBox spacing="16">
+                <padding><Insets top="20" right="40" bottom="40" left="40"/></padding>
+
+                <!-- Profile banner -->
+                <HBox styleClass="profile-banner" alignment="CENTER_LEFT" spacing="20">
+                    <Label text="N" styleClass="avatar-large"/>
+                    <VBox spacing="6">
+                        <Label text="Nguyễn Văn Nam" style="-fx-text-fill: white; -fx-font-size: 24; -fx-font-weight: bold;"/>
+                        <Label text="@nam_dev • Bidder cấp Vàng 🏅" style="-fx-text-fill: rgba(255,255,255,0.9);"/>
+                        <Label text="Tham gia: 13/04/2026 • 247 phiên" style="-fx-text-fill: rgba(255,255,255,0.85); -fx-font-size: 12;"/>
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <VBox alignment="CENTER" spacing="2">
+                        <Label text="32" styleClass="stat-mini"/>
+                        <Label text="ĐÃ THẮNG" styleClass="stat-mini-label"/>
+                    </VBox>
+                    <VBox alignment="CENTER" spacing="2">
+                        <Label text="158" styleClass="stat-mini"/>
+                        <Label text="LƯỢT BID" styleClass="stat-mini-label"/>
+                    </VBox>
+                    <VBox alignment="CENTER" spacing="2">
+                        <Label text="⭐ 4.9" styleClass="stat-mini"/>
+                        <Label text="UY TÍN" styleClass="stat-mini-label"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Wallet card -->
+                <HBox spacing="16">
+                    <VBox styleClass="card,card-padded" HBox.hgrow="ALWAYS" spacing="6">
+                        <Label text="💰 SỐ DƯ VÍ" styleClass="caption"/>
+                        <Label text="125.000.000 ₫" styleClass="h1" style="-fx-text-fill: -fx-primary;"/>
+                        <HBox spacing="10">
+                            <Button text="+ Nạp tiền" styleClass="btn-primary"/>
+                            <Button text="Rút tiền"   styleClass="btn-secondary"/>
+                            <Button text="Lịch sử"    styleClass="btn-ghost"/>
+                        </HBox>
+                    </VBox>
+                    <VBox styleClass="card,card-padded" prefWidth="320" spacing="6">
+                        <Label text="🔒 KÝ QUỸ ĐẤU GIÁ" styleClass="caption"/>
+                        <Label text="42.500.000 ₫" styleClass="h2"/>
+                        <Label text="Đang giữ cho 3 phiên đấu giá" styleClass="muted"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Menu -->
+                <VBox styleClass="card,card-padded" spacing="0">
+                    <HBox styleClass="sidebar-item" spacing="14" alignment="CENTER_LEFT" style="-fx-padding: 14;">
+                        <Label text="📜" style="-fx-font-size: 18;"/>
+                        <Label text="Lịch sử đấu giá" style="-fx-font-weight: bold;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="›" styleClass="muted"/>
+                    </HBox>
+                    <HBox styleClass="sidebar-item" spacing="14" alignment="CENTER_LEFT" style="-fx-padding: 14;">
+                        <Label text="📦" style="-fx-font-size: 18;"/>
+                        <Label text="Đơn hàng / Vận chuyển" style="-fx-font-weight: bold;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="3 đơn đang giao" styleClass="caption"/>
+                        <Label text="›" styleClass="muted"/>
+                    </HBox>
+                    <HBox styleClass="sidebar-item" spacing="14" alignment="CENTER_LEFT" style="-fx-padding: 14;">
+                        <Label text="🏷" style="-fx-font-size: 18;"/>
+                        <Label text="Phiên đang đăng (Seller)" style="-fx-font-weight: bold;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="›" styleClass="muted"/>
+                    </HBox>
+                    <HBox styleClass="sidebar-item" spacing="14" alignment="CENTER_LEFT" style="-fx-padding: 14;">
+                        <Label text="🔐" style="-fx-font-size: 18;"/>
+                        <Label text="Đổi mật khẩu" style="-fx-font-weight: bold;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="›" styleClass="muted"/>
+                    </HBox>
+                    <HBox styleClass="sidebar-item" spacing="14" alignment="CENTER_LEFT" style="-fx-padding: 14;">
+                        <Label text="⚙" style="-fx-font-size: 18;"/>
+                        <Label text="Cài đặt thông báo" style="-fx-font-weight: bold;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="›" styleClass="muted"/>
+                    </HBox>
+                    <HBox styleClass="sidebar-item" spacing="14" alignment="CENTER_LEFT" style="-fx-padding: 14;">
+                        <Label text="❓" style="-fx-font-size: 18;"/>
+                        <Label text="Hỗ trợ" style="-fx-font-weight: bold;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="›" styleClass="muted"/>
+                    </HBox>
+                </VBox>
+
+                <Button text="⏻  Đăng xuất" styleClass="btn-secondary" maxWidth="Infinity"
+                        onAction="#handleLogout"/>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

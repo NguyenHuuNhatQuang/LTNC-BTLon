@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.auction.client.controller.MyBidsController"
+            prefWidth="1280" prefHeight="800">
+    <top>
+        <HBox styleClass="header-shopee" alignment="CENTER_LEFT" spacing="14">
+            <Button text="←" styleClass="header-cart-btn" onAction="#handleBack"/>
+            <Label text="📜 Đấu giá của tôi" style="-fx-text-fill: white; -fx-font-size: 20; -fx-font-weight: bold;"/>
+        </HBox>
+    </top>
+    <center>
+        <VBox>
+            <HBox styleClass="tab-bar" spacing="32" style="-fx-padding: 0 24 0 24;">
+                <Button text="Đang chờ  (4)"  styleClass="tab-pill,tab-pill-active"/>
+                <Button text="Đã thắng  (12)" styleClass="tab-pill"/>
+                <Button text="Đã thua  (28)"  styleClass="tab-pill"/>
+                <Button text="Đã hủy  (1)"    styleClass="tab-pill"/>
+            </HBox>
+            <ScrollPane fitToWidth="true" style="-fx-background-color: -fx-bg; -fx-background: -fx-bg;">
+                <VBox spacing="12" fx:id="bidList">
+                    <padding><Insets top="20" right="40" bottom="40" left="40"/></padding>
+                </VBox>
+            </ScrollPane>
+        </VBox>
+    </center>
+</BorderPane>
