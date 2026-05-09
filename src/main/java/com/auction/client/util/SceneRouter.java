@@ -30,6 +30,12 @@ public final class SceneRouter {
         ROUTES.put("dashboard",      "/view/dashboard.fxml");
         ROUTES.put("auction-detail", "/view/auction-detail.fxml");
         ROUTES.put("create-item",    "/view/create-item.fxml");
+        // Tuần 9 - bổ sung 5 màn hình mới
+        ROUTES.put("watchlist",      "/view/watchlist.fxml");
+        ROUTES.put("live-auction",   "/view/live-auction.fxml");
+        ROUTES.put("notifications",  "/view/notifications.fxml");
+        ROUTES.put("profile",        "/view/profile.fxml");
+        ROUTES.put("my-bids",        "/view/my-bids.fxml");
     }
 
     private SceneRouter() {}
