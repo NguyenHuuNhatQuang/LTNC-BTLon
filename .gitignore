@@ -35,3 +35,9 @@ desktop.ini
 
 # Database file (sẽ tạo ở Tuần 10)
 database.dat
+
+# Internal-only notes — KHÔNG ĐƯỢC PUSH lên GitHub
+notes/
+*-internal.txt
+HANDOFF-*.txt
+HANDOFF-*.md
