@@ -2,6 +2,7 @@ package com.auction.client.controller;
 
 import com.auction.client.model.AuctionView;
 import com.auction.client.util.AlertHelper;
+import com.auction.client.util.NetworkBridge;
 import com.auction.client.util.SceneRouter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -100,6 +101,34 @@ public class AuctionDetailController {
 
         // Auto-suggest giá tiếp theo
         bidInput.setText(String.valueOf((long)(currentBid + STEP)));
+
+        // Tuần 10 - Task 5.3: hook nhận UPDATE_AUCTION realtime từ NetworkBridge
+        NetworkBridge.onAuctionUpdate(this::applyRemoteUpdate);
+        NetworkBridge.onBidRejected(reason -> {
+            showError(reason);
+            AlertHelper.error("Đặt giá bị từ chối", reason);
+        });
+    }
+
+    /**
+     * Tuần 10 - Task 5.3:
+     * Gọi từ NetworkBridge khi nhận UPDATE_AUCTION từ Server.
+     * Đảm bảo chạy trên FX thread (NetworkBridge đã bọc Platform.runLater).
+     */
+    public void applyRemoteUpdate(AuctionView updated) {
+        if (auction == null || !auction.getId().equals(updated.getId())) return;
+        currentBid = updated.getCurrentBid();
+        currentBidLbl.setText(money.format(currentBid) + " ₫");
+        timeLeftLbl.setText(updated.getTimeLeft());
+
+        // Đẩy bid mới lên đầu list nếu có người khác bid
+        String now = java.time.LocalTime.now().format(
+            java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
+        bidHistory.add(0, "remote|" + money.format(currentBid) + "|" + now);
+
+        // Update suggest giá tiếp theo
+        bidInput.setText(String.valueOf((long)(currentBid + STEP)));
+        flashSuccess();
     }
 
     private HBox buildBidRow(String entry) {
