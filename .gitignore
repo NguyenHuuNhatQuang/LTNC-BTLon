@@ -38,6 +38,8 @@ database.dat
 
 # Internal-only notes — KHÔNG ĐƯỢC PUSH lên GitHub
 notes/
+review-network/
 *-internal.txt
 HANDOFF-*.txt
 HANDOFF-*.md
+PRESENTATION-*.txt
