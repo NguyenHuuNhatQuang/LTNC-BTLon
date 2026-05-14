@@ -1,0 +1,139 @@
+name: Release JAR Bundle
+
+# Trigger khi push tag bắt đầu bằng v (vd: v1.0, v1.1-beta)
+on:
+  push:
+    tags:
+      - 'v*.*'
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tên tag để release (vd: v1.0)'
+        required: true
+        default: 'v1.0-draft'
+
+jobs:
+  release:
+    name: Build & Release JAR Bundle
+    runs-on: windows-latest
+    permissions:
+      contents: write   # cần quyền tạo Release
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Build JAR
+        run: mvn -B clean package -DskipTests
+
+      - name: Compile Mock Server
+        shell: bash
+        run: |
+          mkdir -p release-bundle
+          cp target/BidNow-client.jar release-bundle/BidNow.jar
+          cp mock-server/MockAuctionServer.java release-bundle/
+          cp mock-server/TestClient.java release-bundle/
+
+      - name: Copy launch scripts
+        shell: bash
+        run: |
+          # 1-CHAY-APP.bat
+          cat > release-bundle/1-CHAY-APP.bat << 'EOF'
+          @echo off
+          chcp 65001 >nul
+          title BidNow - Auction Client
+          java -version >nul 2>&1 || (echo Vui long cai JDK 17+ tu https://adoptium.net & pause & exit)
+          java -jar "%~dp0BidNow.jar"
+          pause
+          EOF
+
+          # 2-CHAY-MOCK-SERVER.bat
+          cat > release-bundle/2-CHAY-MOCK-SERVER.bat << 'EOF'
+          @echo off
+          chcp 65001 >nul
+          title BidNow - Mock Server (port 7070)
+          cd /d "%~dp0"
+          if not exist MockAuctionServer.class javac MockAuctionServer.java TestClient.java
+          java MockAuctionServer
+          pause
+          EOF
+
+          # 3-TEST-CLIENT.bat
+          cat > release-bundle/3-TEST-CLIENT.bat << 'EOF'
+          @echo off
+          chcp 65001 >nul
+          title BidNow - Test Client
+          cd /d "%~dp0"
+          if not exist TestClient.class javac TestClient.java
+          set /p NAME=Nhap username:
+          java TestClient %NAME%
+          pause
+          EOF
+
+          # README.txt
+          cat > release-bundle/README.txt << 'EOF'
+          BidNow - Demo Bundle
+          ====================
+          Yeu cau: JDK 17+ (https://adoptium.net)
+
+          DEMO OFFLINE:
+            Double-click "1-CHAY-APP.bat"
+
+          DEMO REALTIME (3 cua so):
+            1. Double-click "2-CHAY-MOCK-SERVER.bat"
+            2. Double-click "3-TEST-CLIENT.bat" x2 (alice + bob)
+            3. Trong cua so alice: BID|A001|alice|43000000
+            4. Bob tu dong nhan: UPDATE_AUCTION|...
+
+          GitHub: https://github.com/NguyenHuuNhatQuang/LTNC-BTLon
+          EOF
+
+      - name: Show bundle contents
+        shell: bash
+        run: ls -lh release-bundle/
+
+      - name: Create ZIP
+        shell: pwsh
+        run: |
+          Compress-Archive -Path release-bundle\* -DestinationPath BidNow-Demo.zip -Force
+          Get-Item BidNow-Demo.zip | Select-Object Name, Length
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name || inputs.tag_name }}
+          name: BidNow ${{ github.ref_name || inputs.tag_name }}
+          body: |
+            ## 📦 BidNow Client Bundle
+
+            Tải file `BidNow-Demo.zip`, giải nén, double-click `1-CHAY-APP.bat`.
+
+            ### Yêu cầu
+            - Windows 10/11
+            - JDK 17+ ([tải tại đây](https://adoptium.net))
+
+            ### Bao gồm
+            - `BidNow.jar` — app JavaFX đầy đủ (9 màn hình)
+            - `MockAuctionServer.java` — server demo realtime
+            - `TestClient.java` — console client test
+            - 3 file `.bat` để chạy 1 click
+
+            ### Demo realtime
+            1. Mở 3 cửa sổ
+            2. Cửa sổ 1: chạy `2-CHAY-MOCK-SERVER.bat`
+            3. Cửa sổ 2, 3: chạy `3-TEST-CLIENT.bat` (alice + bob)
+            4. Cửa sổ alice gõ: `BID|A001|alice|43000000`
+            5. Bob nhận realtime broadcast
+          files: |
+            BidNow-Demo.zip
+            target/BidNow-client.jar
+          draft: false
+          prerelease: false
