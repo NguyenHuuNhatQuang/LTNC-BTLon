@@ -311,7 +311,7 @@
 
 /* ---------- LOGIN BACKDROP (Shopee full-bg) ---------- */
 .login-backdrop {
-    -fx-background-color: linear-gradient(135deg, #1877F2 0%, #0095F6 50%, #00C2FF 100%);
+    -fx-background-color: linear-gradient(to bottom right, #1877F2, #0095F6 50%, #00C2FF);
 }
 .login-card-shopee {
     -fx-background-color: white;
@@ -396,7 +396,7 @@
 
 /* ---------- HERO BANNER (Shopee carousel) ---------- */
 .hero-banner {
-    -fx-background-color: linear-gradient(135deg, #1877F2, #9B51E0);
+    -fx-background-color: linear-gradient(to bottom right, #1877F2, #9B51E0);
     -fx-background-radius: 12;
 }
 .hero-text-big {
@@ -523,7 +523,7 @@
 .live-bid-user { -fx-text-fill: #4FC3F7; -fx-font-weight: bold; }
 .live-bid-amount { -fx-text-fill: #FFD54F; -fx-font-weight: bold; }
 .live-stats-card {
-    -fx-background-color: linear-gradient(135deg, #1877F2, #0095F6);
+    -fx-background-color: linear-gradient(to bottom right, #1877F2, #0095F6);
     -fx-background-radius: 12;
     -fx-padding: 16;
 }
@@ -564,7 +564,7 @@
 
 /* ---------- PROFILE ---------- */
 .profile-banner {
-    -fx-background-color: linear-gradient(135deg, #1877F2, #0095F6);
+    -fx-background-color: linear-gradient(to bottom right, #1877F2, #0095F6);
     -fx-background-radius: 12;
     -fx-padding: 24;
 }
