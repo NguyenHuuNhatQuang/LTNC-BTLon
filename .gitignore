@@ -43,3 +43,6 @@ review-network/
 HANDOFF-*.txt
 HANDOFF-*.md
 PRESENTATION-*.txt
+
+# Compiled mock-server (chỉ commit source .java, không commit .class)
+mock-server/*.class
