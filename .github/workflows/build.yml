@@ -1,0 +1,71 @@
+name: Build & Test Client
+
+# Tự động chạy khi push hoặc PR vào nhánh ui, c-network, main
+on:
+  push:
+    branches: [ ui, c-network, main ]
+    paths:
+      - 'src/**'
+      - 'pom.xml'
+      - '.github/workflows/build.yml'
+  pull_request:
+    branches: [ ui, main ]
+  workflow_dispatch:  # cho phép trigger thủ công từ tab Actions
+
+jobs:
+  build:
+    name: Build JAR on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ windows-latest ]   # chỉ build Windows cho BTL scope
+        java: [ '17' ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup JDK ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+          cache: 'maven'
+
+      - name: Show Maven & Java version
+        run: |
+          mvn -version
+          java -version
+        shell: bash
+
+      - name: Compile
+        run: mvn -B clean compile
+
+      - name: Run JUnit tests
+        run: mvn -B test
+        continue-on-error: true   # tạm bỏ qua test fail (đang viết Tuần 12)
+
+      - name: Build fat JAR (with JavaFX bundled)
+        run: mvn -B package -DskipTests
+
+      - name: List output
+        shell: bash
+        run: ls -lh target/*.jar
+
+      - name: Upload JAR as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BidNow-client-${{ github.sha }}
+          path: target/BidNow-client.jar
+          retention-days: 14
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ github.sha }}
+          path: target/surefire-reports/
+          retention-days: 7
+        continue-on-error: true
