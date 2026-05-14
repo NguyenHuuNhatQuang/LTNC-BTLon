@@ -133,6 +133,3 @@ btl/
 | 12   | Watchlist/Notif/MyBids polish | ✅ Done |
 | 13   | LineChart, CSS polish, README | ✅ Done |
 
-## 📄 License
-
-Bài tập lớn nội bộ — phục vụ học tập môn LTNC 2026.
