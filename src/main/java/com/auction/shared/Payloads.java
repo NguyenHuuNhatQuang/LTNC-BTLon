@@ -102,4 +102,50 @@ public final class Payloads {
     public record ErrorPayload(String code, String message) implements Serializable {
         private static final long serialVersionUID = 1L;
     }
+
+    /* ========== AUCTION SUMMARY (lightweight, không serialize cả entity) ========== */
+    /**
+     * Snapshot 1 phiên đấu giá để gửi qua Socket.
+     * Tránh serialize toàn bộ Auction entity (có thể chứa List<Observer> nặng).
+     * Server tạo bằng fromAuction(Auction).
+     */
+    public record AuctionSummaryPayload(
+            String id,
+            String itemName,
+            String sellerName,
+            double currentBid,
+            String status,
+            String timeLeft,
+            String imageUrl)
+            implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Factory tạo từ Auction entity. Server gọi để gửi update.
+         * Dùng Object thay vì Auction để package shared không phụ thuộc model.
+         */
+        public static AuctionSummaryPayload fromAuction(Object auction) {
+            try {
+                Class<?> cls = auction.getClass();
+                String id = (String) cls.getMethod("getId").invoke(auction);
+                Object item = cls.getMethod("getItem").invoke(auction);
+                String itemName = item != null
+                    ? (String) item.getClass().getMethod("getName").invoke(item)
+                    : "";
+                double currentBid = (double) cls.getMethod("getCurrentHighestBid").invoke(auction);
+                Object status = cls.getMethod("getStatus").invoke(auction);
+                String statusStr = status != null ? status.toString() : "OPEN";
+                return new AuctionSummaryPayload(id, itemName, "", currentBid, statusStr, "", "");
+            } catch (Exception e) {
+                throw new RuntimeException("Cannot extract from auction: " + e.getMessage(), e);
+            }
+        }
+
+        /** Convenience factory cho trường hợp đã có sẵn field. */
+        public static AuctionSummaryPayload fromAuction(String id, String itemName,
+                                                        double currentBid, String status,
+                                                        String timeLeft) {
+            return new AuctionSummaryPayload(id, itemName, "", currentBid, status, timeLeft, "");
+        }
+    }
 }
