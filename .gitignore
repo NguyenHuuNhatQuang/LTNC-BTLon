@@ -5,6 +5,9 @@ target/
 *.ear
 *.class
 
+# Exception: KEEP Maven Wrapper jar (cần để clone-and-run)
+!.mvn/wrapper/maven-wrapper.jar
+
 # IntelliJ IDEA
 .idea/
 *.iml
