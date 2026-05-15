@@ -13,19 +13,18 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Auction implements Subject {
-    private String id;
-    private Item item;
-    private List<Bidder> bidders;
-    private List<BidTransaction> bidTransactions;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private double currentHighestBid;
-    private double bidStep; // Bước giá
-    private AuctionStatus status;
-
+    private final String id;
+    private final Item item;
+    private final List<Bidder> bidders;
+    private final List<BidTransaction> bidTransactions;
+    private final LocalDateTime startTime;
+    private final LocalDateTime endTime;
+    private final double bidStep; // Bước giá
     // Yêu cầu Tuần 7: Quản lý Observer và Xử lý Đa luồng
-    private List<Observer> observers;
+    private final List<Observer> observers;
     private final ReentrantLock lock;
+    private double currentHighestBid;
+    private AuctionStatus status;
 
     public Auction(String id, Item item, LocalDateTime startTime, LocalDateTime endTime, double startingPrice, double bidStep) {
         this.id = id;

@@ -2,7 +2,7 @@ package model.user;
 import model.Entity;
 
 public abstract class User extends Entity {
-    private String username;
+    private final String username;
 
     public User(String id, String username) {
         super(id);

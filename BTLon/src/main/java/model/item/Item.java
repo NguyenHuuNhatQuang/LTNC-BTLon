@@ -2,7 +2,7 @@ package model.item;
 import model.Entity;
 
 public abstract class Item extends Entity {
-    private String name;
+    private final String name;
 
     public Item(String id, String name) {
         super(id);

@@ -1,7 +1,7 @@
 package model;
 
 public abstract class Entity {
-    private String id;
+    private final String id;
 
     public Entity(String id) {
         this.id = id;

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class AuctionManager {
     private static AuctionManager instance;
-    private List<Auction> activeAuctions;
+    private final List<Auction> activeAuctions;
 
     private AuctionManager() {
         activeAuctions = new ArrayList<>();

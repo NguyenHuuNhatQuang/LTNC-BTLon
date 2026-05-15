@@ -1,7 +1,7 @@
 package model.item;
 
 public class Electronics extends Item {
-    private int warrantyMonths;
+    private final int warrantyMonths;
 
     public Electronics(String id, String name, int warrantyMonths) {
         super(id, name);

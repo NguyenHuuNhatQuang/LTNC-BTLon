@@ -1,7 +1,7 @@
 package model.item;
 
 public class Art extends Item {
-    private String author;
+    private final String author;
 
     public Art(String id, String name, String author) {
         super(id, name);

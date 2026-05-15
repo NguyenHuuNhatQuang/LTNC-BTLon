@@ -3,9 +3,9 @@ import model.user.Bidder;
 import java.time.LocalDateTime;
 
 public class BidTransaction {
-    private Bidder bidder;
-    private double amount;
-    private LocalDateTime timestamp;
+    private final Bidder bidder;
+    private final double amount;
+    private final LocalDateTime timestamp;
 
     public BidTransaction(Bidder bidder, double amount) {
         this.bidder = bidder;
