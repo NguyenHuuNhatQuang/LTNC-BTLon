@@ -42,22 +42,24 @@ Client (JavaFX)                           Server (Socket)
 - Maven 3.9+
 - (Tự động tải) JavaFX 21 qua Maven dependency
 
-### Cách 1 — Clone & chạy trên IntelliJ IDEA (khuyến nghị)
+### 🚀 Cách 1 — IntelliJ Clone-and-Run (30 GIÂY)
 
 1. **IntelliJ → File → New → Project from Version Control**
 2. URL: `https://github.com/NguyenHuuNhatQuang/LTNC-BTLon.git`
-3. Sau khi clone xong:
-   - Mở **Git tab** (góc dưới trái) → checkout branch `ui`
-   - IntelliJ tự detect Maven project → click **"Load Maven Project"**
-   - Đợi 1-2 phút để IntelliJ tải JavaFX dependencies
-4. Mở **Maven tab** (góc phải) → expand `Plugins → javafx` → double-click **`javafx:run`**
+3. Mở **Git tab** (góc dưới) → Branches → Remote → checkout **`ui`**
+4. Đợi popup **"Load Maven Project"** xuất hiện → click → đợi 1-3 phút tải JavaFX
 
-Hoặc dòng lệnh trong IntelliJ Terminal:
-```bash
-./mvnw javafx:run
-```
+**Sau khi Maven load xong, có 3 run config sẵn ở dropdown góc trên phải:**
 
-### Cách 2 — Command line (không cần IntelliJ)
+| Config | Lệnh tương đương | Khi nào dùng |
+|---|---|---|
+| **1 - Run BidNow Client** | `mvn javafx:run` | Demo bình thường |
+| **2 - Build JAR** | `mvn clean package` | Tạo file `.jar` đóng gói |
+| **3 - Run All Tests** | `mvn test` | Chạy JUnit |
+
+→ Chỉ cần **click ▶️** cạnh dropdown là app khởi động.
+
+### Cách 2 — Command line
 
 ```bash
 git clone https://github.com/NguyenHuuNhatQuang/LTNC-BTLon.git
@@ -67,7 +69,12 @@ git checkout ui
 mvnw.cmd javafx:run      # Windows
 ```
 
-**Lưu ý:** Dùng `./mvnw` (Maven Wrapper) thay vì `mvn` — không cần cài Maven hệ thống.
+**Lưu ý:** Dùng `./mvnw` (Maven Wrapper) — không cần cài Maven hệ thống.
+
+### Cách 3 — JAR đóng gói (không cần Maven)
+
+Tải release ở: https://github.com/NguyenHuuNhatQuang/LTNC-BTLon/releases
+→ Giải nén → double-click `1-CHAY-APP.bat`. Chỉ cần JDK 17+.
 
 ### Chạy Server (S-Team branch)
 ```bash

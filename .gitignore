@@ -15,6 +15,12 @@ target/
 *.ipr
 out/
 
+# Exception: KEEP .run/ folder để IntelliJ tự detect run configs khi clone
+!.run/
+
+# Server workspace tạm
+server-fix/
+
 # Eclipse
 .project
 .classpath
