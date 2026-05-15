@@ -1,8 +1,8 @@
 package com.auction.server.network;
 
-import com.auction.client.network.MessageType;
-import com.auction.client.network.NetworkMessage;
-import com.auction.client.network.Payloads;
+import com.auction.shared.Message;
+import com.auction.shared.MessageType;
+import com.auction.shared.Payloads;
 import model.auction.Auction;
 import model.auction.AuctionManager;
 import pattern.Observer;
@@ -16,6 +16,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * AuctionServer - Quản lý ServerSocket và danh sách ClientHandler.
+ *
+ * Task 4.2 PDF: ServerSocket(port) + ExecutorService cho mỗi client.
+ * Task 5.1 PDF: Broadcast UPDATE_AUCTION khi Auction (Subject) notify.
+ *
+ * FIXED so với phiên bản gốc trên s-network:
+ *  - Import từ com.auction.shared.* (KHÔNG còn từ client.network)
+ *  - Đổi NetworkMessage -> Message theo refactor của C-Team
+ */
 public class AuctionServer {
     private final int port;
     private final List<ClientHandler> clients = new CopyOnWriteArrayList<>();
@@ -35,7 +45,7 @@ public class AuctionServer {
             serverSocket = new ServerSocket(port);
             System.out.println("[AuctionServer] Listening on port " + port);
 
-            // Attach update observer to any auction present at startup.
+            // Attach update observer cho mọi auction hiện có
             for (Auction auction : AuctionManager.getInstance().getActiveAuctions()) {
                 registerAuction(auction);
             }
@@ -51,10 +61,7 @@ public class AuctionServer {
     public void stop() {
         running.set(false);
         if (serverSocket != null) {
-            try {
-                serverSocket.close();
-            } catch (IOException ignored) {
-            }
+            try { serverSocket.close(); } catch (IOException ignored) {}
         }
         for (ClientHandler client : clients) {
             client.closeConnection();
@@ -85,6 +92,10 @@ public class AuctionServer {
         }
     }
 
+    /**
+     * Gắn Observer vào Auction - khi có bid mới sẽ tự broadcast UPDATE_AUCTION
+     * cho TẤT CẢ client đang kết nối (Task 5.1 PDF).
+     */
     public void registerAuction(Auction auction) {
         auction.attach(new Observer() {
             @Override
@@ -98,10 +109,10 @@ public class AuctionServer {
 
     public void broadcastUpdate(Auction auction) {
         Payloads.AuctionSummaryPayload summary = Payloads.AuctionSummaryPayload.fromAuction(auction);
-        broadcast(new NetworkMessage(MessageType.UPDATE_AUCTION, summary));
+        broadcast(new Message(MessageType.UPDATE_AUCTION, summary));
     }
 
-    public void broadcast(NetworkMessage message) {
+    public void broadcast(Message message) {
         for (ClientHandler client : clients) {
             client.send(message);
         }

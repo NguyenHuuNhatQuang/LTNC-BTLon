@@ -6,14 +6,26 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.UUID;
 
-import com.auction.client.network.MessageType;
-import com.auction.client.network.NetworkMessage;
-import com.auction.client.network.Payloads;
+import com.auction.shared.Message;
+import com.auction.shared.MessageType;
+import com.auction.shared.Payloads;
 
 import model.auction.Auction;
 import model.auction.AuctionManager;
 import model.user.Bidder;
 
+/**
+ * ClientHandler - mỗi Client kết nối có 1 instance chạy trên thread riêng.
+ *
+ * Task 4.2 PDF: 1 thread per client.
+ * Task 4.3 PDF: Đọc Message từ Socket, xử lý theo Type.
+ *
+ * FIXED so với phiên bản gốc trên s-network:
+ *  - Import từ com.auction.shared.* (KHÔNG từ client.network)
+ *  - Đổi NetworkMessage -> Message
+ *  - Constructor 3-arg đổi thành builder (new Message + setSessionToken)
+ *  - Constructor 1-arg đổi thành 2-arg với payload=null
+ */
 public class ClientHandler implements Runnable {
     private final AuctionServer server;
     private final Socket socket;
@@ -26,6 +38,7 @@ public class ClientHandler implements Runnable {
     public ClientHandler(Socket socket, AuctionServer server) throws IOException {
         this.socket = socket;
         this.server = server;
+        // QUAN TRỌNG: out tạo TRƯỚC in để tránh deadlock (PDF cảnh báo)
         this.out = new ObjectOutputStream(socket.getOutputStream());
         this.out.flush();
         this.in = new ObjectInputStream(socket.getInputStream());
@@ -36,8 +49,9 @@ public class ClientHandler implements Runnable {
         try {
             while (connected) {
                 Object obj = in.readObject();
-                if (!(obj instanceof NetworkMessage message)) {
-                    send(new NetworkMessage(MessageType.ERROR, new Payloads.ErrorPayload("INVALID_MESSAGE", "Unknown object received")));
+                if (!(obj instanceof Message message)) {
+                    send(new Message(MessageType.ERROR,
+                        new Payloads.ErrorPayload("INVALID_MESSAGE", "Unknown object received")));
                     continue;
                 }
                 handleMessage(message);
@@ -51,14 +65,14 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void handleMessage(NetworkMessage message) {
+    private void handleMessage(Message message) {
         switch (message.getType()) {
-            case PING -> send(new NetworkMessage(MessageType.PONG));
+            case PING -> send(new Message(MessageType.PONG, null));
             case LOGIN_REQUEST -> handleLogin((Payloads.LoginPayload) message.getPayload());
             case GET_AUCTIONS_REQUEST -> handleGetAuctions();
             case BID_REQUEST -> handleBidRequest((Payloads.BidPayload) message.getPayload());
             case LOGOUT_REQUEST -> handleLogout();
-            default -> send(new NetworkMessage(MessageType.ERROR,
+            default -> send(new Message(MessageType.ERROR,
                     new Payloads.ErrorPayload("UNSUPPORTED", "Message type not supported: " + message.getType())));
         }
     }
@@ -68,22 +82,19 @@ public class ClientHandler implements Runnable {
             sendLoginError("Missing username or password.");
             return;
         }
+        // Demo: chưa check password thật, accept mọi user (cho test E2E nhanh)
         this.username = payload.username();
         this.sessionToken = UUID.randomUUID().toString();
 
         Payloads.LoginResponsePayload response = new Payloads.LoginResponsePayload(
-                username,
-                username,
-                username,
-                "bidder",
-                sessionToken,
-                null
-        );
-        send(new NetworkMessage(MessageType.LOGIN_RESPONSE, response, sessionToken));
+                username, username, username, "bidder", sessionToken, null);
+        Message resp = new Message(MessageType.LOGIN_RESPONSE, response);
+        resp.setSessionToken(sessionToken);
+        send(resp);
     }
 
     private void sendLoginError(String error) {
-        send(new NetworkMessage(MessageType.LOGIN_RESPONSE,
+        send(new Message(MessageType.LOGIN_RESPONSE,
                 new Payloads.LoginResponsePayload(null, null, null, null, null, error)));
     }
 
@@ -92,7 +103,7 @@ public class ClientHandler implements Runnable {
                 .map(Payloads.AuctionSummaryPayload::fromAuction)
                 .toList();
         Payloads.AuctionListPayload payload = new Payloads.AuctionListPayload(items, items.size(), 0);
-        send(new NetworkMessage(MessageType.GET_AUCTIONS_RESPONSE, payload));
+        send(new Message(MessageType.GET_AUCTIONS_RESPONSE, payload));
     }
 
     private void handleBidRequest(Payloads.BidPayload payload) {
@@ -115,12 +126,17 @@ public class ClientHandler implements Runnable {
     }
 
     private void sendBidResponse(boolean success, double currentBid, String currentLeader, String errorMessage) {
-        Payloads.BidResponsePayload response = new Payloads.BidResponsePayload(success, currentBid, currentLeader, errorMessage);
-        send(new NetworkMessage(MessageType.BID_RESPONSE, response, sessionToken));
+        Payloads.BidResponsePayload response =
+            new Payloads.BidResponsePayload(success, currentBid, currentLeader, errorMessage);
+        Message msg = new Message(MessageType.BID_RESPONSE, response);
+        if (sessionToken != null) msg.setSessionToken(sessionToken);
+        send(msg);
     }
 
     private void handleLogout() {
-        send(new NetworkMessage(MessageType.LOGOUT_REQUEST, null, sessionToken));
+        Message ok = new Message(MessageType.OK, null);
+        if (sessionToken != null) ok.setSessionToken(sessionToken);
+        send(ok);
         closeConnection();
     }
 
@@ -131,11 +147,11 @@ public class ClientHandler implements Runnable {
                 .orElse(null);
     }
 
-    public void send(NetworkMessage message) {
+    public void send(Message message) {
         if (!connected) return;
         try {
             synchronized (out) {
-                out.reset();
+                out.reset();   // CHỐNG ObjectStream CACHE (PDF Tuần 10 §5.1)
                 out.writeObject(message);
                 out.flush();
             }
@@ -149,17 +165,8 @@ public class ClientHandler implements Runnable {
         if (!connected) return;
         connected = false;
         server.removeClient(this);
-        try {
-            if (in != null) in.close();
-        } catch (IOException ignored) {
-        }
-        try {
-            if (out != null) out.close();
-        } catch (IOException ignored) {
-        }
-        try {
-            if (socket != null && !socket.isClosed()) socket.close();
-        } catch (IOException ignored) {
-        }
+        try { if (in != null) in.close(); } catch (IOException ignored) {}
+        try { if (out != null) out.close(); } catch (IOException ignored) {}
+        try { if (socket != null && !socket.isClosed()) socket.close(); } catch (IOException ignored) {}
     }
 }
