@@ -1,6 +1,8 @@
 package com.auction.client.controller;
 
 import com.auction.client.model.AuctionView;
+import com.auction.client.util.AlertHelper;
+import com.auction.client.util.NetworkBridge;
 import com.auction.client.util.SceneRouter;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -86,15 +88,35 @@ public class WatchlistController implements Initializable {
 
         Button removeBtn = new Button("🗑");
         removeBtn.getStyleClass().add("btn-ghost");
-        removeBtn.setOnAction(e -> watchList.getChildren().remove(row));
+        removeBtn.setOnAction(e -> {
+            if (AlertHelper.confirm("Xoá khỏi danh sách theo dõi?", a.getItemName())) {
+                watchList.getChildren().remove(row);
+                // Tuần 12: hook gọi server xoá watchlist khi network sẵn sàng
+                // NetworkManager.send(WATCHLIST_REMOVE, new WatchlistPayload(userId, a.getId()))
+                updateTotal();
+            }
+        });
 
         row.getChildren().addAll(cb, img, info, priceBox, bidBtn, removeBtn);
         return row;
     }
 
     @FXML private void handleBack()        { SceneRouter.go("dashboard"); }
-    @FXML private void handleTabWatching() { /* TODO filter */ }
-    @FXML private void handleTabEnding()   {}
-    @FXML private void handleTabWon()      {}
-    @FXML private void handleTabLost()     {}
+    @FXML private void handleTabWatching() { activateTab(tabWatching); }
+    @FXML private void handleTabEnding()   { activateTab(tabEnding); }
+    @FXML private void handleTabWon()      { activateTab(tabWon); }
+    @FXML private void handleTabLost()     { activateTab(tabLost); }
+
+    /** Tuần 12: chuyển style active tab. */
+    private void activateTab(Button selected) {
+        for (Button b : new Button[]{tabWatching, tabEnding, tabWon, tabLost}) {
+            b.getStyleClass().removeAll("tab-pill-active");
+        }
+        selected.getStyleClass().add("tab-pill-active");
+    }
+
+    /** Tuần 12: tính lại tổng giá trị sau khi xoá item. */
+    private void updateTotal() {
+        totalCountLbl.setText(watchList.getChildren().size() + " phiên");
+    }
 }
