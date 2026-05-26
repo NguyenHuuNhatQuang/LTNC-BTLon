@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -49,6 +50,23 @@
                                 <Button text="Theo dõi" styleClass="btn-secondary"/>
                             </HBox>
                         </VBox>
+                    </VBox>
+
+                    <VBox styleClass="card,card-padded" spacing="10">
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="📈 Biểu đồ giá realtime" styleClass="h3"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label fx:id="chartRangeLabel" text="20 lượt gần nhất" styleClass="caption"/>
+                        </HBox>
+                        <LineChart fx:id="priceChart" prefHeight="220" animated="false" legendVisible="false"
+                                   createSymbols="true">
+                            <xAxis>
+                                <CategoryAxis fx:id="timeAxis" label="Thời gian"/>
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis fx:id="priceAxis" label="Giá (₫)" tickLabelRotation="0"/>
+                            </yAxis>
+                        </LineChart>
                     </VBox>
 
                     <VBox styleClass="card,card-padded" spacing="10">
