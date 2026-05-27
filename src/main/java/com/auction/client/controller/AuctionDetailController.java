@@ -9,6 +9,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -42,6 +46,13 @@ public class AuctionDetailController {
     @FXML private Label bidErrorLbl;
 
     @FXML private ListView<String> bidHistoryList;
+
+    @FXML private LineChart<String, Number> priceChart;
+    @FXML private CategoryAxis timeAxis;
+    @FXML private NumberAxis priceAxis;
+    @FXML private Label chartRangeLabel;
+    private final XYChart.Series<String, Number> priceSeries = new XYChart.Series<>();
+    private static final int CHART_MAX_POINTS = 20;
 
     private final NumberFormat money = NumberFormat.getInstance(new Locale("vi", "VN"));
     private final ObservableList<String> bidHistory = FXCollections.observableArrayList();
@@ -102,6 +113,12 @@ public class AuctionDetailController {
         // Auto-suggest giá tiếp theo
         bidInput.setText(String.valueOf((long)(currentBid + STEP)));
 
+        // Tuần 13 - Task 7.3: khởi tạo LineChart giá realtime
+        priceChart.getData().clear();
+        priceSeries.getData().clear();
+        priceChart.getData().add(priceSeries);
+        addPriceDataPoint(currentBid);
+
         // Tuần 10 - Task 5.3: hook nhận UPDATE_AUCTION realtime từ NetworkBridge
         NetworkBridge.onAuctionUpdate(this::applyRemoteUpdate);
         NetworkBridge.onBidRejected(reason -> {
@@ -128,7 +145,25 @@ public class AuctionDetailController {
 
         // Update suggest giá tiếp theo
         bidInput.setText(String.valueOf((long)(currentBid + STEP)));
+
+        // Tuần 13 - Task 7.3: thêm điểm dữ liệu mới vào biểu đồ giá
+        addPriceDataPoint(currentBid);
+
         flashSuccess();
+    }
+
+    /**
+     * Tuần 13 - Task 7.3: thêm 1 điểm vào LineChart.
+     * Giữ tối đa CHART_MAX_POINTS điểm gần nhất (sliding window).
+     */
+    private void addPriceDataPoint(double price) {
+        String time = java.time.LocalTime.now().format(
+            java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss"));
+        priceSeries.getData().add(new XYChart.Data<>(time, price));
+        if (priceSeries.getData().size() > CHART_MAX_POINTS) {
+            priceSeries.getData().remove(0);
+        }
+        chartRangeLabel.setText(priceSeries.getData().size() + " / " + CHART_MAX_POINTS + " điểm");
     }
 
     private HBox buildBidRow(String entry) {
@@ -204,6 +239,9 @@ public class AuctionDetailController {
 
             // Suggest giá tiếp theo
             bidInput.setText(String.valueOf((long)(currentBid + STEP)));
+
+            // Tuần 13 - Task 7.3: thêm điểm dữ liệu vào biểu đồ
+            addPriceDataPoint(currentBid);
 
             // Hiệu ứng nhấp xanh (chuẩn bị cho Task 5.3 Tuần 10)
             flashSuccess();
